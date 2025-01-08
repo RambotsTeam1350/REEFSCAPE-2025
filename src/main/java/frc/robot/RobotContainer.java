@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSubsystem;
+import frc.robot.subsystems.vision.LimelightSubsystem;
 
 public class RobotContainer {
     // Controllers
@@ -23,6 +24,7 @@ public class RobotContainer {
 
     // Subsystems
     private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
+    private final LimelightSubsystem limelight = new LimelightSubsystem();
 
     public RobotContainer() {
         configureDrivetrainBindings();
@@ -31,7 +33,7 @@ public class RobotContainer {
     private void configureDrivetrainBindings() {
         final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
         final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                  // max angular velocity
+        // max angular velocity
 
         /* Setting up bindings for necessary control of the swerve drive platform */
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
