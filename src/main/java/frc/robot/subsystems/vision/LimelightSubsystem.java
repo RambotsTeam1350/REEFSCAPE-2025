@@ -14,7 +14,7 @@ public class LimelightSubsystem extends SubsystemBase {
     config();
   }
 
-  private static class NoSuchTargetException extends RuntimeException {
+  public static class NoSuchTargetException extends RuntimeException {
     public NoSuchTargetException(String message) {
       super(message);
     }
@@ -30,7 +30,7 @@ public class LimelightSubsystem extends SubsystemBase {
         0,
         0,
         0);
-    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[] { 5 });
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[] { 1, 4 });
   }
 
   @Override
@@ -38,20 +38,20 @@ public class LimelightSubsystem extends SubsystemBase {
     fiducials = LimelightHelpers.getRawFiducials("");
 
     // for (RawFiducial fiducial : fiducials) {
-    //   int id = fiducial.id; // Tag ID
-    //   double txnc = fiducial.txnc; // X offset (no crosshair)
-    //   double tync = fiducial.tync; // Y offset (no crosshair)
-    //   double ta = fiducial.ta; // Target area
-    //   double distToCamera = fiducial.distToCamera; // Distance to camera
-    //   double distToRobot = fiducial.distToRobot; // Distance to robot
-    //   double ambiguity = fiducial.ambiguity; // Tag pose ambiguity
-    //   SmartDashboard.putNumber("id", id);
-    //   SmartDashboard.putNumber("txnc", txnc);
-    //   SmartDashboard.putNumber("tync", tync);
-    //   SmartDashboard.putNumber("ta", ta);
-    //   SmartDashboard.putNumber("distToCamera", distToCamera);
-    //   SmartDashboard.putNumber("distToRobot", distToRobot);
-    //   SmartDashboard.putNumber("ambiguity", ambiguity);
+    // int id = fiducial.id; // Tag ID
+    // double txnc = fiducial.txnc; // X offset (no crosshair)
+    // double tync = fiducial.tync; // Y offset (no crosshair)
+    // double ta = fiducial.ta; // Target area
+    // double distToCamera = fiducial.distToCamera; // Distance to camera
+    // double distToRobot = fiducial.distToRobot; // Distance to robot
+    // double ambiguity = fiducial.ambiguity; // Tag pose ambiguity
+    // SmartDashboard.putNumber("id", id);
+    // SmartDashboard.putNumber("txnc", txnc);
+    // SmartDashboard.putNumber("tync", tync);
+    // SmartDashboard.putNumber("ta", ta);
+    // SmartDashboard.putNumber("distToCamera", distToCamera);
+    // SmartDashboard.putNumber("distToRobot", distToRobot);
+    // SmartDashboard.putNumber("ambiguity", ambiguity);
     // }
   }
 
