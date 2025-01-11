@@ -19,20 +19,15 @@ public class FollowAprilTag extends Command {
   private final LimelightSubsystem limelight;
 
   private static final PIDControllerConfigurable rotationalPidController = new PIDControllerConfigurable(
-      0.03, 0, 0, 0.2);
-  private static final PIDControllerConfigurable xPidController = new PIDControllerConfigurable(0.3, 0, 0, 0.3);
+      0.05, 0, 0, 0.5);
+  private static final PIDControllerConfigurable xPidController = new PIDControllerConfigurable(0.3, 0, 0, 0.2);
+  private static final PIDControllerConfigurable yPidController = new PIDControllerConfigurable(0.3, 0, 0, 0.5);
   private static final SwerveRequest.RobotCentric alignRequest = new SwerveRequest.RobotCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
 
   // private static final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
-
-  private final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
-                                                                                      // speed
-  private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
-                                                                                          // second
-  // max angular velocity
 
   public FollowAprilTag(CommandSwerveDrivetrainSubsystem drivetrain, LimelightSubsystem limelight) {
     this.drivetrain = drivetrain;
@@ -50,10 +45,14 @@ public class FollowAprilTag extends Command {
     try {
       fiducial = limelight.getFiducialWithId(4);
 
-      final double rotationalRate = rotationalPidController.calculate(fiducial.txnc, 0) * MaxAngularRate * 0.2;
-      final double velocityX = xPidController.calculate(fiducial.distToRobot, 2.25) * -1.0 * MaxSpeed * 0.2;
+      final double rotationalRate = rotationalPidController.calculate(fiducial.txnc, 0) * TunerConstants.MaxAngularRate
+          * 0.2;
+      final double velocityX = xPidController.calculate(fiducial.distToRobot, 2.25) * -1.0 * TunerConstants.MaxSpeed
+          * 0.5;
+      // final double velocityY = yPidController.calculate(fiducial.tync, 0) *
+      // TunerConstants.MaxSpeed * 0.3;
 
-      if (rotationalPidController.atSetpoint() && xPidController.atSetpoint()) {
+      if (rotationalPidController.atSetpoint() && xPidController.atSetpoint() && yPidController.atSetpoint()) {
         this.end(true);
       }
 
@@ -61,7 +60,9 @@ public class FollowAprilTag extends Command {
       SmartDashboard.putNumber("distToRobot", fiducial.distToRobot);
       SmartDashboard.putNumber("rotationalPidController", rotationalRate);
       SmartDashboard.putNumber("xPidController", velocityX);
-      drivetrain.setControl(alignRequest.withRotationalRate(rotationalRate).withVelocityX(velocityX));
+      drivetrain.setControl(
+          alignRequest.withRotationalRate(rotationalRate).withVelocityX(velocityX));
+      // .withVelocityY(velocityY));
       // drivetrain.applyRequest(() -> alignRequest.withRotationalRate(0.5 *
       // MaxAngularRate)
       // .withVelocityX(xPidController.calculate(0.2 * MaxSpeed)));
