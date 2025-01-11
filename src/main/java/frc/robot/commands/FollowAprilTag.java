@@ -12,7 +12,6 @@ import frc.robot.lib.PIDControllerConfigurable;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSubsystem;
 import frc.robot.subsystems.vision.LimelightSubsystem;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
-import pabeles.concurrency.IntOperatorTask.Max;
 
 public class FollowAprilTag extends Command {
   private final CommandSwerveDrivetrainSubsystem drivetrain;
