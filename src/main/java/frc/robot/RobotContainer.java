@@ -70,6 +70,17 @@ public class RobotContainer {
         driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         driverController.x().whileTrue(new FollowAprilTag(drivetrain, limelight));
+        driverController.povUp().whileTrue(
+                drivetrain.applyRequest(() -> drivetrain.driveRequest.withVelocityX(TunerConstants.MaxSpeed * 0.25)));
+        driverController.povDown().whileTrue(
+                drivetrain.applyRequest(
+                        () -> drivetrain.driveRequest.withVelocityX(TunerConstants.MaxSpeed * 0.25 * -1.0)));
+        driverController.povLeft().whileTrue(
+                drivetrain.applyRequest(
+                        () -> drivetrain.driveRequest.withVelocityY(TunerConstants.MaxSpeed * 0.25)));
+        driverController.povRight().whileTrue(
+                drivetrain.applyRequest(
+                        () -> drivetrain.driveRequest.withVelocityY(TunerConstants.MaxSpeed * 0.25 * -1.0)));
 
         drivetrain.registerTelemetry(drivetrain.logger::telemeterize);
     }
