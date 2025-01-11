@@ -42,7 +42,6 @@ public class FollowAprilTag extends Command {
 
   @Override
   public void initialize() {
-    this.end(true);
   }
 
   @Override
