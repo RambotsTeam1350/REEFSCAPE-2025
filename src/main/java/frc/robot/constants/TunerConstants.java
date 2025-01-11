@@ -198,6 +198,13 @@ public class TunerConstants {
                                         kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted,
                                         kBackRightEncoderInverted);
 
+        /* Moved from RobotContainer */
+        public static final double MaxSpeed = kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+        public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a
+                                                                                                      // rotation per
+                                                                                                      // second
+        // max angular velocity
+
         /**
          * Creates a CommandSwerveDrivetrain instance.
          * This should only be called once in your robot program,.
