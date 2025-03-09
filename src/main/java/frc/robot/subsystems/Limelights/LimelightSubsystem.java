@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -41,6 +43,17 @@ public class LimelightSubsystem extends SubsystemBase {
   private final double TARGET_MOUNT_HEIGHT = 12.125; //height of the apriltag off the ground, in this case the one on the coral station
   private final double LIMELIGHT_MOUNT_ANGLE = 0.0; 
   private final double Ta = LimelightHelpers.getTA("limelight-five");
+
+  private final int[] CORAL_TAGS_RED = {6, 7, 8, 9, 10, 11};
+  private final int[] CORAL_TAGS_BLUE = {17, 18, 19, 20, 21, 22};
+
+  public final int[] getCoralTags(Alliance alliance) {
+    if (alliance == Alliance.Red) {
+      return CORAL_TAGS_RED;
+    } else {
+      return CORAL_TAGS_BLUE;
+    }
+  }
 
   public double[] getPoseData5() {
     Pose3d pose = LimelightHelpers.getBotPose3d_TargetSpace(limelightName5);
@@ -79,7 +92,7 @@ public void periodic() {
 
 }
 
-  public LimelightSubsystem() {
+public LimelightSubsystem() {
 
   limelightTable3 = NetworkTableInstance.getDefault().getTable("limelight-three");
   limelightTable5 = NetworkTableInstance.getDefault().getTable("limelight-five");
@@ -88,7 +101,10 @@ public void periodic() {
   
   drivetrain = TunerConstants.createDrivetrain(); 
 
-  }
+  Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+  LimelightHelpers.SetFiducialIDFiltersOverride(limelightName3, getCoralTags(alliance));
+  LimelightHelpers.SetFiducialIDFiltersOverride(limelightName5, getCoralTags(alliance));
+}
 
 public double LimelightMountAngle() {
  
