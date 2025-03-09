@@ -86,14 +86,17 @@ public class RobotContainer {
         joystick1.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
         joystick1.y().onFalse(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
    
-        //joystick1.leftBumper().onTrue(shoulderSubsystem.ShoulderToLevel2());
-        joystick1.leftTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
+        //joystick2.leftBumper().onTrue(shoulderSubsystem.ShoulderToLevel2());
+        joystick2.leftTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
         
         joystick1.povUp().onTrue(climberSubsystem.ascendCommand());
         joystick1.povDown().onFalse(climberSubsystem.descendCommand());
         
         joystick1.x().onTrue(limelightSubsystem.RobotToLeftCoralStation());
         joystick1.start().onTrue(limelightSubsystem.RobotToRightCoralStation());
+
+        joystick1.leftTrigger().onTrue(limelightSubsystem.alignToCoralReef("left"));
+        joystick1.rightTrigger().onTrue(limelightSubsystem.alignToCoralReef("right"));
     }
 
 
