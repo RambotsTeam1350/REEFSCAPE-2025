@@ -102,8 +102,8 @@ public LimelightSubsystem() {
   drivetrain = TunerConstants.createDrivetrain(); 
 
   Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
-  LimelightHelpers.SetFiducialIDFiltersOverride(limelightName3, getCoralTags(alliance));
-  LimelightHelpers.SetFiducialIDFiltersOverride(limelightName5, getCoralTags(alliance));
+  // LimelightHelpers.SetFiducialIDFiltersOverride(limelightName3, getCoralTags(alliance));
+  // LimelightHelpers.SetFiducialIDFiltersOverride(limelightName5, getCoralTags(alliance));
 }
 
 public double LimelightMountAngle() {
