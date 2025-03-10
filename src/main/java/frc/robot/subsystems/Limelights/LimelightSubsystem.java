@@ -162,12 +162,13 @@ public Command alignToCoralReef(String alignmentDirection) {
           double tx = LimelightHelpers.getTX(selectedLimelight);
           
           // Calculate distance to target
-          // Using the target pose in camera space to get distance
-          double[] targetPose = LimelightHelpers.getTargetPose_CameraSpace(selectedLimelight);
+          // Using the robot pose in target space to get distance
+          double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
           double currentDistance = 0;
-          if (targetPose != null && targetPose.length >= 3) {
+          if (robotPose != null && robotPose.length >= 3) {
               // Use the Z component as the forward distance
-              currentDistance = targetPose[2];
+              // Note: In target space, negative Z means robot is in front of the target
+              currentDistance = Math.abs(robotPose[2]);
           }
           
           // Calculate PID outputs
@@ -193,10 +194,11 @@ public Command alignToCoralReef(String alignmentDirection) {
           // Check if we've reached the target position
           double tx = LimelightHelpers.getTX(selectedLimelight);
           
-          double[] targetPose = LimelightHelpers.getTargetPose_CameraSpace(selectedLimelight);
+          double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
           double currentDistance = 0;
-          if (targetPose != null && targetPose.length >= 3) {
-              currentDistance = targetPose[2];
+          if (robotPose != null && robotPose.length >= 3) {
+              // In target space, negative Z means robot is in front of the target
+              currentDistance = Math.abs(robotPose[2]);
           }
           
           boolean distanceOnTarget = Math.abs(currentDistance - TARGET_DISTANCE) < DISTANCE_TOLERANCE;
