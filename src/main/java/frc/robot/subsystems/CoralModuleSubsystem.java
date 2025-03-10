@@ -65,4 +65,12 @@ public class CoralModuleSubsystem {
 
         );
     }
-}
+
+    public Command deliverCoral() {
+      final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+      return Commands.sequence(
+          // Commands.runOnce (() -> moduleMotor.setControl(m_request.withPosition(-50)))
+      );
+    }
+
+  }

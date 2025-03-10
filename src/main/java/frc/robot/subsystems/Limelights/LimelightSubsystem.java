@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -41,6 +43,17 @@ public class LimelightSubsystem extends SubsystemBase {
   private final double TARGET_MOUNT_HEIGHT = 12.125; //height of the apriltag off the ground, in this case the one on the coral station
   private final double LIMELIGHT_MOUNT_ANGLE = 0.0; 
   private final double Ta = LimelightHelpers.getTA("limelight-five");
+
+  private final int[] CORAL_TAGS_RED = {6, 7, 8, 9, 10, 11};
+  private final int[] CORAL_TAGS_BLUE = {17, 18, 19, 20, 21, 22};
+
+  public final int[] getCoralTags(Alliance alliance) {
+    if (alliance == Alliance.Red) {
+      return CORAL_TAGS_RED;
+    } else {
+      return CORAL_TAGS_BLUE;
+    }
+  }
 
   public double[] getPoseData5() {
     Pose3d pose = LimelightHelpers.getBotPose3d_TargetSpace(limelightName5);
@@ -79,7 +92,7 @@ public void periodic() {
 
 }
 
-  public LimelightSubsystem() {
+public LimelightSubsystem() {
 
   limelightTable3 = NetworkTableInstance.getDefault().getTable("limelight-three");
   limelightTable5 = NetworkTableInstance.getDefault().getTable("limelight-five");
@@ -88,7 +101,10 @@ public void periodic() {
   
   drivetrain = TunerConstants.createDrivetrain(); 
 
-  }
+  Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+  LimelightHelpers.SetFiducialIDFiltersOverride(limelightName3, getCoralTags(alliance));
+  LimelightHelpers.SetFiducialIDFiltersOverride(limelightName5, getCoralTags(alliance));
+}
 
 public double LimelightMountAngle() {
  
@@ -110,7 +126,94 @@ public double getRotation() {
   return rotationError;
 }
 
+public Command alignToCoralReef(String alignmentDirection) {
+  if (alignmentDirection != "left") {
+    alignmentDirection = "right";
+  }
+  String selectedLimelight = alignmentDirection == "left" ? limelightName3 : limelightName5;
 
+  // Create PID controllers for distance and alignment
+  final double kP_Distance = 0.1;  // Proportional gain for distance control
+  final double kI_Distance = 0.0;  // Integral gain for distance control
+  final double kD_Distance = 0.01; // Derivative gain for distance control
+  
+  final double kP_Alignment = 0.03; // Proportional gain for horizontal alignment
+  final double kI_Alignment = 0.0;  // Integral gain for horizontal alignment
+  final double kD_Alignment = 0.01; // Derivative gain for horizontal alignment
+  
+  // Target distance in meters (1 foot = 0.3048 meters)
+  final double TARGET_DISTANCE = 0.3048;
+  
+  // Tolerance values
+  final double DISTANCE_TOLERANCE = 0.05;   // 5cm tolerance for distance
+  final double ALIGNMENT_TOLERANCE = 1.0;   // 1 degree tolerance for alignment
+  
+  // Maximum speeds
+  final double MAX_FORWARD_SPEED = 0.5;     // meters per second
+  final double MAX_ROTATION_SPEED = 0.5;    // radians per second
+  
+  return Commands.sequence(
+      // First, make sure we have a valid target
+      Commands.waitUntil(() -> LimelightHelpers.getTV(selectedLimelight)),
+      
+      // Then use a repeating command to continuously adjust position until we reach the target
+      Commands.run(() -> {
+          // Get current measurements from Limelight
+          double tx = LimelightHelpers.getTX(selectedLimelight);
+          
+          // Calculate distance to target
+          // Using the target pose in camera space to get distance
+          double[] targetPose = LimelightHelpers.getTargetPose_CameraSpace(selectedLimelight);
+          double currentDistance = 0;
+          if (targetPose != null && targetPose.length >= 3) {
+              // Use the Z component as the forward distance
+              currentDistance = targetPose[2];
+          }
+          
+          // Calculate PID outputs
+          double distanceError = currentDistance - TARGET_DISTANCE;
+          double forwardSpeed = distanceError * kP_Distance;
+          
+          double alignmentError = tx;
+          double rotationSpeed = -alignmentError * kP_Alignment; // Negative because positive tx means target is to the right
+          
+          // Apply limits
+          forwardSpeed = MathUtil.clamp(forwardSpeed, -MAX_FORWARD_SPEED, MAX_FORWARD_SPEED);
+          rotationSpeed = MathUtil.clamp(rotationSpeed, -MAX_ROTATION_SPEED, MAX_ROTATION_SPEED);
+          
+          // Set the drivetrain control
+          drivetrain.setControl(
+              new SwerveRequest.FieldCentric()
+                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                  .withVelocityX(forwardSpeed) // Forward/backward
+                  .withVelocityY(0)            // No sideways movement
+                  .withRotationalRate(rotationSpeed) // Rotation to center the target
+          );
+      }).until(() -> {
+          // Check if we've reached the target position
+          double tx = LimelightHelpers.getTX(selectedLimelight);
+          
+          double[] targetPose = LimelightHelpers.getTargetPose_CameraSpace(selectedLimelight);
+          double currentDistance = 0;
+          if (targetPose != null && targetPose.length >= 3) {
+              currentDistance = targetPose[2];
+          }
+          
+          boolean distanceOnTarget = Math.abs(currentDistance - TARGET_DISTANCE) < DISTANCE_TOLERANCE;
+          boolean alignmentOnTarget = Math.abs(tx) < ALIGNMENT_TOLERANCE;
+          
+          return distanceOnTarget && alignmentOnTarget;
+      }),
+      
+      // Stop the robot when we're done
+      Commands.runOnce(() -> drivetrain.setControl(
+          new SwerveRequest.FieldCentric()
+              .withVelocityX(0)
+              .withVelocityY(0)
+              .withRotationalRate(0)
+      ))
+  );
+}
 
 public Command RobotToLeftCoralStation() {
     // Create a SwerveRequest object for the desired motion
