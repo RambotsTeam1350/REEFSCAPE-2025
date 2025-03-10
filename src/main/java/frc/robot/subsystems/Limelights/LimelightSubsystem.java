@@ -163,126 +163,149 @@ public class LimelightSubsystem extends SubsystemBase {
     return rotationError;
   }
   
-  // Variables to store previous values for filtering
-  private double prevForwardSpeed = 0.0;
-  private double prevRotationSpeed = 0.0;
-  
-  public Command alignToCoralReef(String alignmentDirection) {
-    if (alignmentDirection != "left") {
-      alignmentDirection = "right";
-    }
-    String selectedLimelight = alignmentDirection == "left" ? limelightName3 : limelightName5;
-    
-    // Reset previous values
-    prevForwardSpeed = 0.0;
-    prevRotationSpeed = 0.0;
-    
-    // Create PID controllers for distance and alignment - reduced gains to prevent oscillation
-    final double kP_Distance = 0.05;  // Reduced from 0.1 to make movement less aggressive
-    final double kI_Distance = 0.0;   // Integral gain for distance control
-    final double kD_Distance = 0.02;  // Increased derivative gain for better damping
-    
-    final double kP_Alignment = 0.02; // Reduced from 0.03 to make rotation less aggressive
-    final double kI_Alignment = 0.0;  // Integral gain for horizontal alignment
-    final double kD_Alignment = 0.02; // Increased derivative gain for better damping
-    
-    // Target distance in meters (1 foot = 0.3048 meters)
-    final double TARGET_DISTANCE = 0.3048;
-    
-    // Tolerance values
-    final double DISTANCE_TOLERANCE = 0.05;   // 5cm tolerance for distance
-    final double ALIGNMENT_TOLERANCE = 1.0;   // 1 degree tolerance for alignment
-    
-    // Maximum speeds
-    final double MAX_FORWARD_SPEED = 0.3;     // Reduced from 0.5 to make movement smoother
-    final double MAX_ROTATION_SPEED = 0.3;    // Reduced from 0.5 to make rotation smoother
-    
-    // Deadband values to ignore very small errors
-    final double DISTANCE_DEADBAND = 0.02;    // 2cm deadband for distance
-    final double ALIGNMENT_DEADBAND = 0.5;    // 0.5 degree deadband for alignment
-    
-    // Filter constants (for smoothing control outputs)
-    final double FORWARD_FILTER_CONSTANT = 0.2;  // Lower = more filtering
-    final double ROTATION_FILTER_CONSTANT = 0.2; // Lower = more filtering
-    
-    return Commands.sequence(
-    // First, make sure we have a valid target
-    Commands.waitUntil(() -> LimelightHelpers.getTV(selectedLimelight)),
-    
-    // Then use a repeating command to continuously adjust position until we reach the target
-    Commands.run(() -> {
-      // Get current measurements from Limelight
-      double tx = LimelightHelpers.getTX(selectedLimelight);
-      
-      // Calculate distance to target
-      // Using the robot pose in target space to get distance
-      double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
-      double currentDistance = 0;
-      if (robotPose != null && robotPose.length >= 3) {
-        // Use the Z component as the forward distance
-        // Note: In target space, negative Z means robot is in front of the target
-        currentDistance = Math.abs(robotPose[2]);
-      }
-      
-      // Calculate PID outputs with deadband
-      double distanceError = currentDistance - TARGET_DISTANCE;
-      double forwardSpeed = 0;
-      if (Math.abs(distanceError) > DISTANCE_DEADBAND) {
-        forwardSpeed = distanceError * kP_Distance;
-      }
-      
-      double alignmentError = tx;
-      double rotationSpeed = 0;
-      if (Math.abs(alignmentError) > ALIGNMENT_DEADBAND) {
-        rotationSpeed = -alignmentError * kP_Alignment; // Negative because positive tx means target is to the right
-      }
-      
-      // Apply low-pass filter to smooth the control outputs
-      forwardSpeed = FORWARD_FILTER_CONSTANT * forwardSpeed + (1 - FORWARD_FILTER_CONSTANT) * prevForwardSpeed;
-      rotationSpeed = ROTATION_FILTER_CONSTANT * rotationSpeed + (1 - ROTATION_FILTER_CONSTANT) * prevRotationSpeed;
-      
-      // Save current values for next iteration
-      prevForwardSpeed = forwardSpeed;
-      prevRotationSpeed = rotationSpeed;
-      
-      // Apply limits
-      forwardSpeed = MathUtil.clamp(forwardSpeed, -MAX_FORWARD_SPEED, MAX_FORWARD_SPEED);
-      rotationSpeed = MathUtil.clamp(rotationSpeed, -MAX_ROTATION_SPEED, MAX_ROTATION_SPEED);
-      
-      // Set the drivetrain control
-      drivetrain.setControl(
-      new SwerveRequest.FieldCentric()
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(forwardSpeed) // Forward/backward
-      .withVelocityY(0)            // No sideways movement
-      .withRotationalRate(rotationSpeed) // Rotation to center the target
-      );
-    }).until(() -> {
-      // Check if we've reached the target position
-      double tx = LimelightHelpers.getTX(selectedLimelight);
-      
-      double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
-      double currentDistance = 0;
-      if (robotPose != null && robotPose.length >= 3) {
-        // In target space, negative Z means robot is in front of the target
-        currentDistance = Math.abs(robotPose[2]);
-      }
-      
-      boolean distanceOnTarget = Math.abs(currentDistance - TARGET_DISTANCE) < DISTANCE_TOLERANCE;
-      boolean alignmentOnTarget = Math.abs(tx) < ALIGNMENT_TOLERANCE;
-      
-      return distanceOnTarget && alignmentOnTarget;
-    }),
-    
-    // Stop the robot when we're done
-    Commands.runOnce(() -> drivetrain.setControl(
-    new SwerveRequest.FieldCentric()
-    .withVelocityX(0)
-    .withVelocityY(0)
-    .withRotationalRate(0)
-    ))
-    );
+/**
+ * Command to align the robot to a coral reef using a direct approach.
+ * This method uses a completely different strategy - instead of continuous feedback,
+ * it takes a single measurement and executes a direct path to the target.
+ * 
+ * @param alignmentDirection "left" or "right" to select which limelight to use
+ * @return Command to align to the coral reef
+ */
+public Command alignToCoralReef(String alignmentDirection) {
+  if (alignmentDirection != "left") {
+    alignmentDirection = "right";
   }
+  final String selectedLimelight = alignmentDirection == "left" ? limelightName3 : limelightName5;
+  
+  // Target distance in meters (1 foot = 0.3048 meters)
+  final double TARGET_DISTANCE = 0.3048;
+  
+  return new Command() {
+    private boolean isFinished = false;
+    private double initialTx = 0;
+    private double initialDistance = 0;
+    private double rotationDuration = 0;
+    private double forwardDuration = 0;
+    private long startTime = 0;
+    private int stage = 0; // 0=init, 1=rotate, 2=move forward/back, 3=done
+    
+    @Override
+    public void initialize() {
+      // Wait until we have a valid target
+      if (!LimelightHelpers.getTV(selectedLimelight)) {
+        System.out.println("No valid target found. Aborting alignment.");
+        isFinished = true;
+        return;
+      }
+      
+      // Take initial measurements
+      initialTx = LimelightHelpers.getTX(selectedLimelight);
+      
+      double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
+      if (robotPose != null && robotPose.length >= 3) {
+        initialDistance = Math.abs(robotPose[2]);
+      } else {
+        System.out.println("Could not get robot pose. Aborting alignment.");
+        isFinished = true;
+        return;
+      }
+      
+      // Log initial state
+      System.out.println("Starting alignment with tx=" + initialTx + ", distance=" + initialDistance);
+      
+      // Calculate how long to rotate and move
+      // Use a fixed rotation rate of 0.3 rad/s
+      double rotationRate = 0.3; // radians per second
+      rotationDuration = Math.abs(Math.toRadians(initialTx) / rotationRate);
+      
+      // Use a fixed forward speed of 0.3 m/s
+      double forwardSpeed = 0.3; // meters per second
+      forwardDuration = Math.abs(initialDistance - TARGET_DISTANCE) / forwardSpeed;
+      
+      // Cap durations to reasonable values
+      rotationDuration = Math.min(rotationDuration, 3.0); // max 3 seconds of rotation
+      forwardDuration = Math.min(forwardDuration, 3.0);   // max 3 seconds of forward movement
+      
+      System.out.println("Planned rotation for " + rotationDuration + " seconds");
+      System.out.println("Planned forward movement for " + forwardDuration + " seconds");
+      
+      startTime = System.currentTimeMillis();
+      stage = 1; // Start with rotation
+    }
+    
+    @Override
+    public void execute() {
+      long currentTime = System.currentTimeMillis();
+      double elapsedSeconds = (currentTime - startTime) / 1000.0;
+      
+      if (stage == 1) {
+        // Rotation stage
+        if (elapsedSeconds < rotationDuration) {
+          // Still rotating
+          double rotationRate = initialTx > 0 ? -0.3 : 0.3; // Rotate opposite to tx
+          drivetrain.setControl(
+              new SwerveRequest.RobotCentric()
+                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                  .withVelocityX(0)
+                  .withVelocityY(0)
+                  .withRotationalRate(rotationRate)
+          );
+        } else {
+          // Done rotating, move to next stage
+          System.out.println("Rotation complete, moving to forward/backward stage");
+          startTime = System.currentTimeMillis(); // Reset timer for next stage
+          stage = 2;
+        }
+      } else if (stage == 2) {
+        // Forward/backward movement stage
+        if (elapsedSeconds < forwardDuration) {
+          // Still moving
+          double forwardSpeed = initialDistance > TARGET_DISTANCE ? 0.3 : -0.3;
+          drivetrain.setControl(
+              new SwerveRequest.RobotCentric()
+                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                  .withVelocityX(forwardSpeed)
+                  .withVelocityY(0)
+                  .withRotationalRate(0)
+          );
+        } else {
+          // Done moving, finish command
+          System.out.println("Forward/backward movement complete, alignment finished");
+          drivetrain.setControl(
+              new SwerveRequest.RobotCentric()
+                  .withVelocityX(0)
+                  .withVelocityY(0)
+                  .withRotationalRate(0)
+          );
+          stage = 3;
+          isFinished = true;
+        }
+      }
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+      // Stop the robot
+      drivetrain.setControl(
+          new SwerveRequest.RobotCentric()
+              .withVelocityX(0)
+              .withVelocityY(0)
+              .withRotationalRate(0)
+      );
+      
+      if (interrupted) {
+        System.out.println("Alignment was interrupted");
+      } else {
+        System.out.println("Alignment completed successfully");
+      }
+    }
+    
+    @Override
+    public boolean isFinished() {
+      return isFinished;
+    }
+  };
+}
   
   public Command RobotToLeftCoralStation() {
     // Create a SwerveRequest object for the desired motion
