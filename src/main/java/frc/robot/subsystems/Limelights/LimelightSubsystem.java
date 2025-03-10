@@ -163,126 +163,157 @@ public class LimelightSubsystem extends SubsystemBase {
     return rotationError;
   }
   
-  // Variables to store previous values for filtering
-  private double prevForwardSpeed = 0.0;
-  private double prevRotationSpeed = 0.0;
-  
-  public Command alignToCoralReef(String alignmentDirection) {
-    if (alignmentDirection != "left") {
-      alignmentDirection = "right";
-    }
-    String selectedLimelight = alignmentDirection == "left" ? limelightName3 : limelightName5;
-    
-    // Reset previous values
-    prevForwardSpeed = 0.0;
-    prevRotationSpeed = 0.0;
-    
-    // Create PID controllers for distance and alignment - reduced gains to prevent oscillation
-    final double kP_Distance = 0.05;  // Reduced from 0.1 to make movement less aggressive
-    final double kI_Distance = 0.0;   // Integral gain for distance control
-    final double kD_Distance = 0.02;  // Increased derivative gain for better damping
-    
-    final double kP_Alignment = 0.02; // Reduced from 0.03 to make rotation less aggressive
-    final double kI_Alignment = 0.0;  // Integral gain for horizontal alignment
-    final double kD_Alignment = 0.02; // Increased derivative gain for better damping
-    
-    // Target distance in meters (1 foot = 0.3048 meters)
-    final double TARGET_DISTANCE = 0.3048;
-    
-    // Tolerance values
-    final double DISTANCE_TOLERANCE = 0.05;   // 5cm tolerance for distance
-    final double ALIGNMENT_TOLERANCE = 1.0;   // 1 degree tolerance for alignment
-    
-    // Maximum speeds
-    final double MAX_FORWARD_SPEED = 0.3;     // Reduced from 0.5 to make movement smoother
-    final double MAX_ROTATION_SPEED = 0.3;    // Reduced from 0.5 to make rotation smoother
-    
-    // Deadband values to ignore very small errors
-    final double DISTANCE_DEADBAND = 0.02;    // 2cm deadband for distance
-    final double ALIGNMENT_DEADBAND = 0.5;    // 0.5 degree deadband for alignment
-    
-    // Filter constants (for smoothing control outputs)
-    final double FORWARD_FILTER_CONSTANT = 0.2;  // Lower = more filtering
-    final double ROTATION_FILTER_CONSTANT = 0.2; // Lower = more filtering
-    
-    return Commands.sequence(
-    // First, make sure we have a valid target
-    Commands.waitUntil(() -> LimelightHelpers.getTV(selectedLimelight)),
-    
-    // Then use a repeating command to continuously adjust position until we reach the target
-    Commands.run(() -> {
-      // Get current measurements from Limelight
-      double tx = LimelightHelpers.getTX(selectedLimelight);
-      
-      // Calculate distance to target
-      // Using the robot pose in target space to get distance
-      double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
-      double currentDistance = 0;
-      if (robotPose != null && robotPose.length >= 3) {
-        // Use the Z component as the forward distance
-        // Note: In target space, negative Z means robot is in front of the target
-        currentDistance = Math.abs(robotPose[2]);
-      }
-      
-      // Calculate PID outputs with deadband
-      double distanceError = currentDistance - TARGET_DISTANCE;
-      double forwardSpeed = 0;
-      if (Math.abs(distanceError) > DISTANCE_DEADBAND) {
-        forwardSpeed = distanceError * kP_Distance;
-      }
-      
-      double alignmentError = tx;
-      double rotationSpeed = 0;
-      if (Math.abs(alignmentError) > ALIGNMENT_DEADBAND) {
-        rotationSpeed = -alignmentError * kP_Alignment; // Negative because positive tx means target is to the right
-      }
-      
-      // Apply low-pass filter to smooth the control outputs
-      forwardSpeed = FORWARD_FILTER_CONSTANT * forwardSpeed + (1 - FORWARD_FILTER_CONSTANT) * prevForwardSpeed;
-      rotationSpeed = ROTATION_FILTER_CONSTANT * rotationSpeed + (1 - ROTATION_FILTER_CONSTANT) * prevRotationSpeed;
-      
-      // Save current values for next iteration
-      prevForwardSpeed = forwardSpeed;
-      prevRotationSpeed = rotationSpeed;
-      
-      // Apply limits
-      forwardSpeed = MathUtil.clamp(forwardSpeed, -MAX_FORWARD_SPEED, MAX_FORWARD_SPEED);
-      rotationSpeed = MathUtil.clamp(rotationSpeed, -MAX_ROTATION_SPEED, MAX_ROTATION_SPEED);
-      
-      // Set the drivetrain control
-      drivetrain.setControl(
-      new SwerveRequest.FieldCentric()
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(forwardSpeed) // Forward/backward
-      .withVelocityY(0)            // No sideways movement
-      .withRotationalRate(rotationSpeed) // Rotation to center the target
-      );
-    }).until(() -> {
-      // Check if we've reached the target position
-      double tx = LimelightHelpers.getTX(selectedLimelight);
-      
-      double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
-      double currentDistance = 0;
-      if (robotPose != null && robotPose.length >= 3) {
-        // In target space, negative Z means robot is in front of the target
-        currentDistance = Math.abs(robotPose[2]);
-      }
-      
-      boolean distanceOnTarget = Math.abs(currentDistance - TARGET_DISTANCE) < DISTANCE_TOLERANCE;
-      boolean alignmentOnTarget = Math.abs(tx) < ALIGNMENT_TOLERANCE;
-      
-      return distanceOnTarget && alignmentOnTarget;
-    }),
-    
-    // Stop the robot when we're done
-    Commands.runOnce(() -> drivetrain.setControl(
-    new SwerveRequest.FieldCentric()
-    .withVelocityX(0)
-    .withVelocityY(0)
-    .withRotationalRate(0)
-    ))
-    );
+public Command alignToCoralReef(String alignmentDirection) {
+  if (alignmentDirection != "left") {
+    alignmentDirection = "right";
   }
+  String selectedLimelight = alignmentDirection == "left" ? limelightName3 : limelightName5;
+
+  // Target distance in meters (1 foot = 0.3048 meters)
+  final double TARGET_DISTANCE = 0.3048;
+  
+  // Tolerance values
+  final double DISTANCE_TOLERANCE = 0.05;   // 5cm tolerance for distance
+  final double ALIGNMENT_TOLERANCE = 1.0;   // 1 degree tolerance for alignment
+  
+  // Fixed speeds for more predictable movement
+  final double FORWARD_SPEED = 0.15;        // Slow, fixed forward speed
+  final double ROTATION_SPEED = 0.1;        // Slow, fixed rotation speed
+  
+  return Commands.sequence(
+      // First, make sure we have a valid target
+      Commands.waitUntil(() -> LimelightHelpers.getTV(selectedLimelight)),
+      
+      // Step 1: Rotate to face the target first
+      Commands.run(() -> {
+          double tx = LimelightHelpers.getTX(selectedLimelight);
+          
+          // Simple bang-bang control for rotation - either rotate left, right, or stop
+          if (tx > ALIGNMENT_TOLERANCE) {
+              // Target is to the right, rotate right (negative rotation)
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(-ROTATION_SPEED)
+              );
+          } else if (tx < -ALIGNMENT_TOLERANCE) {
+              // Target is to the left, rotate left (positive rotation)
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(ROTATION_SPEED)
+              );
+          } else {
+              // Aligned with target, stop rotating
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(0)
+              );
+          }
+      }).until(() -> {
+          double tx = LimelightHelpers.getTX(selectedLimelight);
+          return Math.abs(tx) < ALIGNMENT_TOLERANCE;
+      }),
+      
+      // Step 2: Now that we're facing the target, drive forward or backward to reach the desired distance
+      Commands.run(() -> {
+          double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
+          double currentDistance = 0;
+          if (robotPose != null && robotPose.length >= 3) {
+              currentDistance = Math.abs(robotPose[2]);
+          }
+          
+          // Simple bang-bang control for distance - either move forward, backward, or stop
+          if (currentDistance > TARGET_DISTANCE + DISTANCE_TOLERANCE) {
+              // Too far, move forward
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(FORWARD_SPEED)
+                      .withVelocityY(0)
+                      .withRotationalRate(0)
+              );
+          } else if (currentDistance < TARGET_DISTANCE - DISTANCE_TOLERANCE) {
+              // Too close, move backward
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(-FORWARD_SPEED)
+                      .withVelocityY(0)
+                      .withRotationalRate(0)
+              );
+          } else {
+              // At the right distance, stop moving
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(0)
+              );
+          }
+      }).until(() -> {
+          double[] robotPose = LimelightHelpers.getBotPose_TargetSpace(selectedLimelight);
+          double currentDistance = 0;
+          if (robotPose != null && robotPose.length >= 3) {
+              currentDistance = Math.abs(robotPose[2]);
+          }
+          return Math.abs(currentDistance - TARGET_DISTANCE) < DISTANCE_TOLERANCE;
+      }),
+      
+      // Step 3: Final alignment check - make sure we're still aligned
+      Commands.run(() -> {
+          double tx = LimelightHelpers.getTX(selectedLimelight);
+          
+          if (tx > ALIGNMENT_TOLERANCE) {
+              // Target is to the right, rotate right
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(-ROTATION_SPEED)
+              );
+          } else if (tx < -ALIGNMENT_TOLERANCE) {
+              // Target is to the left, rotate left
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(ROTATION_SPEED)
+              );
+          } else {
+              // Aligned with target, stop
+              drivetrain.setControl(
+                  new SwerveRequest.RobotCentric()
+                      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                      .withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(0)
+              );
+          }
+      }).until(() -> {
+          double tx = LimelightHelpers.getTX(selectedLimelight);
+          return Math.abs(tx) < ALIGNMENT_TOLERANCE;
+      }),
+      
+      // Stop the robot when we're done
+      Commands.runOnce(() -> drivetrain.setControl(
+          new SwerveRequest.RobotCentric()
+              .withVelocityX(0)
+              .withVelocityY(0)
+              .withRotationalRate(0)
+      ))
+  );
+}
   
   public Command RobotToLeftCoralStation() {
     // Create a SwerveRequest object for the desired motion
