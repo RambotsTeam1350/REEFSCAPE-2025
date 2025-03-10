@@ -126,20 +126,28 @@ public double getRotation() {
   return rotationError;
 }
 
+// Variables to store previous values for filtering
+private double prevForwardSpeed = 0.0;
+private double prevRotationSpeed = 0.0;
+
 public Command alignToCoralReef(String alignmentDirection) {
   if (alignmentDirection != "left") {
     alignmentDirection = "right";
   }
   String selectedLimelight = alignmentDirection == "left" ? limelightName3 : limelightName5;
 
-  // Create PID controllers for distance and alignment
-  final double kP_Distance = 0.1;  // Proportional gain for distance control
-  final double kI_Distance = 0.0;  // Integral gain for distance control
-  final double kD_Distance = 0.01; // Derivative gain for distance control
+  // Reset previous values
+  prevForwardSpeed = 0.0;
+  prevRotationSpeed = 0.0;
+
+  // Create PID controllers for distance and alignment - reduced gains to prevent oscillation
+  final double kP_Distance = 0.05;  // Reduced from 0.1 to make movement less aggressive
+  final double kI_Distance = 0.0;   // Integral gain for distance control
+  final double kD_Distance = 0.02;  // Increased derivative gain for better damping
   
-  final double kP_Alignment = 0.03; // Proportional gain for horizontal alignment
+  final double kP_Alignment = 0.02; // Reduced from 0.03 to make rotation less aggressive
   final double kI_Alignment = 0.0;  // Integral gain for horizontal alignment
-  final double kD_Alignment = 0.01; // Derivative gain for horizontal alignment
+  final double kD_Alignment = 0.02; // Increased derivative gain for better damping
   
   // Target distance in meters (1 foot = 0.3048 meters)
   final double TARGET_DISTANCE = 0.3048;
@@ -149,8 +157,16 @@ public Command alignToCoralReef(String alignmentDirection) {
   final double ALIGNMENT_TOLERANCE = 1.0;   // 1 degree tolerance for alignment
   
   // Maximum speeds
-  final double MAX_FORWARD_SPEED = 0.5;     // meters per second
-  final double MAX_ROTATION_SPEED = 0.5;    // radians per second
+  final double MAX_FORWARD_SPEED = 0.3;     // Reduced from 0.5 to make movement smoother
+  final double MAX_ROTATION_SPEED = 0.3;    // Reduced from 0.5 to make rotation smoother
+  
+  // Deadband values to ignore very small errors
+  final double DISTANCE_DEADBAND = 0.02;    // 2cm deadband for distance
+  final double ALIGNMENT_DEADBAND = 0.5;    // 0.5 degree deadband for alignment
+  
+  // Filter constants (for smoothing control outputs)
+  final double FORWARD_FILTER_CONSTANT = 0.2;  // Lower = more filtering
+  final double ROTATION_FILTER_CONSTANT = 0.2; // Lower = more filtering
   
   return Commands.sequence(
       // First, make sure we have a valid target
@@ -171,12 +187,26 @@ public Command alignToCoralReef(String alignmentDirection) {
               currentDistance = Math.abs(robotPose[2]);
           }
           
-          // Calculate PID outputs
+          // Calculate PID outputs with deadband
           double distanceError = currentDistance - TARGET_DISTANCE;
-          double forwardSpeed = distanceError * kP_Distance;
+          double forwardSpeed = 0;
+          if (Math.abs(distanceError) > DISTANCE_DEADBAND) {
+              forwardSpeed = distanceError * kP_Distance;
+          }
           
           double alignmentError = tx;
-          double rotationSpeed = -alignmentError * kP_Alignment; // Negative because positive tx means target is to the right
+          double rotationSpeed = 0;
+          if (Math.abs(alignmentError) > ALIGNMENT_DEADBAND) {
+              rotationSpeed = -alignmentError * kP_Alignment; // Negative because positive tx means target is to the right
+          }
+          
+          // Apply low-pass filter to smooth the control outputs
+          forwardSpeed = FORWARD_FILTER_CONSTANT * forwardSpeed + (1 - FORWARD_FILTER_CONSTANT) * prevForwardSpeed;
+          rotationSpeed = ROTATION_FILTER_CONSTANT * rotationSpeed + (1 - ROTATION_FILTER_CONSTANT) * prevRotationSpeed;
+          
+          // Save current values for next iteration
+          prevForwardSpeed = forwardSpeed;
+          prevRotationSpeed = rotationSpeed;
           
           // Apply limits
           forwardSpeed = MathUtil.clamp(forwardSpeed, -MAX_FORWARD_SPEED, MAX_FORWARD_SPEED);
