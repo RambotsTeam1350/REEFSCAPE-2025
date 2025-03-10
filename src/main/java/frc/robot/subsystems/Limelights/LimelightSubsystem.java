@@ -57,13 +57,13 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public double[] getPoseData5() {
     Pose3d pose = LimelightHelpers.getBotPose3d_TargetSpace(limelightName5);
-    System.out.println(pose);
+    //System.out.println(pose);
     return LimelightHelpers.pose3dToArray(pose);
 }
 
 public double[] getPoseData3() {
   Pose3d pose = LimelightHelpers.getBotPose3d_TargetSpace(limelightName3);
-  System.out.println(pose);
+  //System.out.println(pose);
   return LimelightHelpers.pose3dToArray(pose);
 }
 

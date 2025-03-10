@@ -23,6 +23,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.Limelights.LimelightSubsystem;
+import frc.robot.commands.AlignToReefTagRelative;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -47,7 +48,9 @@ public class RobotContainer {
     private final CommandXboxController joystick2 = new CommandXboxController(1); // Upper Mech conroller
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
+    
+    // private final AlignToReefTagRelative alignToReefTagRelative = new AlignToReefTagRelative(false, drivetrain);
+    
     public RobotContainer() {
         configureBindings();
     }
@@ -89,7 +92,7 @@ public class RobotContainer {
         joystick1.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
         joystick1.y().onFalse(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
 
-        joystick1.leftTrigger().onTrue(limelightSubsystem.alignToCoralReef("left"));
+        joystick1.leftBumper().onTrue(new AlignToReefTagRelative(false, drivetrain));
         joystick1.rightTrigger().onTrue(limelightSubsystem.alignToCoralReef("right"));
 
         ////////////////////////////////////////////////////////////////////////////////////
