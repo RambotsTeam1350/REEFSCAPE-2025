@@ -52,6 +52,7 @@ public class RobotContainer {
     private final CommandXboxController joystick2 = new CommandXboxController(1); // Upper Mech conroller
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    
     private final AlignToReefTagRelative AlignToReefTagRelative = new AlignToReefTagRelative(false, drivetrain);
     public RobotContainer() {
         configureBindings();
@@ -89,10 +90,10 @@ public class RobotContainer {
         // reset the field-centric heading on start button press
         joystick1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        joystick1.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
+        //joystick1.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
         //joystick1.x().onFalse(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
-        joystick1.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
-        joystick1.y().onFalse(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
+        //joystick1.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
+        //joystick1.y().onFalse(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
 
         //joystick1.leftTrigger().onTrue(limelightSubsystem.alignToCoralReef("left"));
         joystick1.leftBumper().onTrue(AlignToReefTagRelative);
@@ -102,16 +103,16 @@ public class RobotContainer {
         ////////////////////////////////////////////////////////////////////////////////////
         /// Scoring controls
         ////////////////////////////////////////////////////////////////////////////////////
-        joystick2.rightBumper().onTrue(climberSubsystem.ascendCommand());
-        joystick1.leftBumper().onTrue(climberSubsystem.descendCommand());
+        joystick2.povDown().onTrue(climberSubsystem.ascendCommand());
+        joystick1.povUp().onTrue(climberSubsystem.descendCommand());
 
         joystick2.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
         joystick2.x().onTrue(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
-        joystick2.y().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
-        joystick2.b().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
+        joystick2.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
+        joystick2.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
 
         //joystick2.leftBumper().onTrue(shoulderSubsystem.ShoulderToLevel2());
-        joystick2.rightTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
+        joystick2.leftTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
         // joystick2.leftTrigger().onTrue(coralModuleSubsystem.deliverCoral()));
     }
 

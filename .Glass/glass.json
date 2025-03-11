@@ -23,6 +23,9 @@
         "open": true
       },
       "limelight-three": {
+        "double[]##v_/limelight-three/botpose_targetspace": {
+          "open": true
+        },
         "open": true
       }
     },

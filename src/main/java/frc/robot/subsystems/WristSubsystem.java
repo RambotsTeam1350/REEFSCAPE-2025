@@ -46,14 +46,13 @@ public void periodic() {
     //System.out.println(position.getValueAsDouble() + " wrist motor");
 }
 
-public Command WristToLevel2() {
+public Command WristToRestPosition() {
 
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
 
-        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(50))) // encoder value
+        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(0)))
     );
-
 }
 
 public Command WristToLevel1() {
@@ -61,7 +60,17 @@ public Command WristToLevel1() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
 
-        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(0))) // encoder value
+        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(-1))) // encoder value
+    );
+
+}
+
+public Command WristToLevel2() {
+
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    return Commands.sequence(
+
+        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(9))) // encoder value
     );
 
 }
@@ -71,7 +80,7 @@ public Command WristToLevel3() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
 
-        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(75))) // encoder value
+        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(9))) // encoder value
     );
 }
 
@@ -80,7 +89,16 @@ public Command WristToLevel4() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
 
-        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(87.5))) // encoder value
+        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(0.8))) // encoder value
+    );
+}
+
+public Command WristToCoralStation() {
+    
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    return Commands.sequence(
+
+        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(1.5))) // encoder value
     );
 }
 
@@ -89,7 +107,7 @@ public Command WristToLevelBarge() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
 
-        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(100))) // encoder value
+        Commands.runOnce (() -> wristMotor.setControl(m_request.withPosition(1.4))) // encoder value
     );
 }
 
