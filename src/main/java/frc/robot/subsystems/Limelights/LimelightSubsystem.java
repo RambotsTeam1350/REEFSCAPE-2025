@@ -135,9 +135,7 @@ public class LimelightSubsystem extends SubsystemBase {
     limelightTable5 = NetworkTableInstance.getDefault().getTable("limelight-five");
     
     limelightTable1 = NetworkTableInstance.getDefault().getTable("limelight-one");
-    
-    drivetrain = TunerConstants.createDrivetrain(); 
-    
+        
     Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
     // LimelightHelpers.SetFiducialIDFiltersOverride(limelightName3, getCoralTags(alliance));
     // LimelightHelpers.SetFiducialIDFiltersOverride(limelightName5, getCoralTags(alliance));
