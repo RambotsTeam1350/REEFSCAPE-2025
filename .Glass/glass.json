@@ -8,12 +8,18 @@
         "open": true
       },
       "SmartDashboard": {
+        "Scheduler": {
+          "int[]##v_/SmartDashboard/Scheduler/Ids": {
+            "open": true
+          },
+          "open": true,
+          "string[]##v_/SmartDashboard/Scheduler/Names": {
+            "open": true
+          }
+        },
         "open": true
       },
       "limelight": {
-        "open": true
-      },
-      "limelight-five": {
         "open": true
       },
       "limelight-three": {
@@ -26,7 +32,8 @@
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
-      "/SmartDashboard/Module 3": "Mechanism2d"
+      "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/Scheduler": "Scheduler"
     }
   },
   "NetworkTables Info": {
