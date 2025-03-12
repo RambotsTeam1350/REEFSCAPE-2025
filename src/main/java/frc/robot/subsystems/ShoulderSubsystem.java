@@ -52,6 +52,15 @@ public void periodic() {
     //System.out.println(position.getValueAsDouble() + " shoulder motor");
 }
 
+public Command ShoulderToRestPosition() {
+
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    return Commands.sequence(
+
+        Commands.runOnce (() -> shoulderMotor.setControl(m_request.withPosition(0)))
+    );
+}
+
 public Command ShoulderToLevel1() {
 
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
@@ -66,7 +75,7 @@ public Command ShoulderToLevel2() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(degreesWithGearBoxRatio(0))))
+        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-2)))
     );
 }
 
@@ -75,7 +84,7 @@ public Command ShoulderToLevel3() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(degreesWithGearBoxRatio(10.9))))
+        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-2)))
     );
 }
 
@@ -84,7 +93,16 @@ public Command ShoulderToLevel4() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(degreesWithGearBoxRatio(11.3))))
+        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-1)))
+    );
+}
+
+public Command ShoulderToCoralStation() {
+
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    return Commands.sequence(
+        
+        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(7)))
     );
 }
 
@@ -93,7 +111,7 @@ public Command ShoulderToLevelBarge() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(degreesWithGearBoxRatio(21.5))))
+        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(12)))
     );
 }
 // there may be other commands for other angles of the shoulder added later

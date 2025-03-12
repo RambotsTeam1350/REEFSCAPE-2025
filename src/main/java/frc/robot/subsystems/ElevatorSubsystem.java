@@ -64,13 +64,21 @@ public void periodic() {
     //System.out.println(position2.getValueAsDouble() + " elevator motor 2");
 }
 
+public Command RestPositionCommand() {
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    return Commands.sequence(
+        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(0))),
+        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(0)))
+    );
+}
+
 public Command L1Command() {
 
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(0.5))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-0.5)))
+        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(7.7))),
+        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-7.8)))
     );
 }
 
@@ -81,8 +89,8 @@ public Command L2Command() {
     return Commands.sequence(
        
     // set target position to 100 rotations
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(15))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-15)))
+        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(1.8))),
+        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-1.9)))
     );
 }
 
@@ -90,8 +98,8 @@ public Command L3Command() {
 final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 return Commands.sequence(
     
-    Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(30))),
-    Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-30)))
+    Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(31))),
+    Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-32)))
 );
 }
 
@@ -99,8 +107,8 @@ public Command L4Command() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(45))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-45)))
+        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(42))),
+        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-43)))
 
     );
 
@@ -111,8 +119,8 @@ public Command LBargeCommand() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(60))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-60)))
+        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(44))),
+        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-44)))
     );
 }
 
