@@ -46,14 +46,14 @@ public class RobotContainer {
       Inches.of(11.5).unaryMinus(),
       new Rotation3d(0, 0, 0));
 
-  private final LimelightSubsystem limelightFive = new LimelightSubsystem(
+  private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
       new LimelightConfig("limelight-five", frontLeftLimelightPose));
 
-  // private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+  // private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
   // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
   // Inches.of(8.25).in(Meters), 0, 0, 0));
 
-  private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+  private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
       new LimelightConfig("limelight-fifteen", frontRightLimelightPose));
 
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -116,8 +116,8 @@ public class RobotContainer {
     // reset the field-centric heading on start press
     driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFifteen));
-    driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFive));
+    driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontRight));
+    driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft));
 
     driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
