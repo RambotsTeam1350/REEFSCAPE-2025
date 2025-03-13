@@ -139,13 +139,16 @@ public class RobotContainer {
     /// Scoring controls
     //////////////////////////////////////////////////////
 
-    // scoringController.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
-    // scoringController.x().onTrue(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
-    // scoringController.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
-    // scoringController.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
+    scoringController.povLeft().onTrue(coralModuleSubsystem.IntakeCoral());
+    scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
 
-    // scoringController.leftTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
-    // scoringController.leftTrigger().onTrue(coralModuleSubsystem.deliverCoral()));
+    scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
+    scoringController.povUp().onTrue(climberSubsystem.descendCommand());
+
+    scoringController.a().onTrue(shoulderSubsystem.ShoulderToLevel1().alongWith(wristSubsystem.WristToLevel1()));
+    scoringController.x().onTrue(shoulderSubsystem.ShoulderToLevel2().alongWith(wristSubsystem.WristToLevel2()));
+    scoringController.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
+    scoringController.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
 
     //////////////////////////////////////////////////////
 
