@@ -31,6 +31,7 @@ import frc.robot.subsystems.vision.LimelightSubsystem;
 public class RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController scoringController = new CommandXboxController(1);
 
   // Subsystems
   private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
@@ -133,6 +134,20 @@ public class RobotContainer {
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
                 .withVelocityY(TunerConstants.MaxSpeed * 0.25 * -1.0)));
+
+    //////////////////////////////////////////////////////
+    /// Scoring controls
+    //////////////////////////////////////////////////////
+
+    // scoringController.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
+    // scoringController.x().onTrue(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
+    // scoringController.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
+    // scoringController.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
+
+    // scoringController.leftTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
+    // scoringController.leftTrigger().onTrue(coralModuleSubsystem.deliverCoral()));
+
+    //////////////////////////////////////////////////////
 
     drivetrain.registerTelemetry(drivetrain.logger::telemeterize);
   }
