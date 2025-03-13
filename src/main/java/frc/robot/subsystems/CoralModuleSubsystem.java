@@ -20,6 +20,7 @@ public class CoralModuleSubsystem extends SubsystemBase {
 
   private StatusSignal<Voltage> motorSupplyVoltage;
 
+  private final MotionMagicVoltage motorMotionMagicVoltageIntake;
   private final MotionMagicVoltage motorMotionMagicVoltage;
 
   private boolean hasCoral;
@@ -27,6 +28,7 @@ public class CoralModuleSubsystem extends SubsystemBase {
   public CoralModuleSubsystem() {
     this.motor = new TalonFX(Constants.MOTOR_ID);
     this.motorSupplyVoltage = this.motor.getSupplyVoltage();
+    this.motorMotionMagicVoltageIntake = new MotionMagicVoltage(0);
     this.motorMotionMagicVoltage = new MotionMagicVoltage(0);
   }
 
@@ -49,12 +51,15 @@ public class CoralModuleSubsystem extends SubsystemBase {
     this.hasCoral = false;
   }
 
-  public Command intakeCoral() {
+  public Command intakeCoralCommand() {
     return Commands.sequence(
-        Commands.runOnce(() -> motor.setControl(this.motorMotionMagicVoltage.withPosition(15))));
+        Commands.runOnce(() -> this.resetCoralState()),
+        Commands.runOnce(() -> this.motor.set(0.5)),
+        Commands.waitUntil(this::hasCoral),
+        Commands.runOnce(() -> this.motor.stopMotor()));
   }
 
-  public Command deliverCoral() {
+  public Command deliverCoralCommand() {
     return Commands.sequence(
         Commands.runOnce(() -> motor.setControl(this.motorMotionMagicVoltage.withPosition(0))));
   }

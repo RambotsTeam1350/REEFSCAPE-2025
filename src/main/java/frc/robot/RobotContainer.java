@@ -140,11 +140,14 @@ public class RobotContainer {
     /// Scoring controls
     //////////////////////////////////////////////////////
 
-    scoringController.povLeft().onTrue(coralModuleSubsystem.intakeCoral());
-    scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
+    // scoringController.povLeft().onTrue(coralModuleSubsystem.intakeCoral());
+    // scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
 
     scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
     scoringController.povUp().onTrue(climberSubsystem.descendCommand());
+
+    scoringController.leftBumper().toggleOnTrue(coralModuleSubsystem.intakeCoralCommand());
+    scoringController.rightBumper().onTrue(coralModuleSubsystem.deliverCoralCommand());
 
     // scoringController.a().onTrue(shoulderSubsystem.ShoulderToLevel1().alongWith(wristSubsystem.WristToLevel1()));
     // scoringController.x().onTrue(shoulderSubsystem.ShoulderToLevel2().alongWith(wristSubsystem.WristToLevel2()));
