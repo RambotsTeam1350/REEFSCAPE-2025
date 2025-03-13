@@ -145,10 +145,10 @@ public class RobotContainer {
     scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
     scoringController.povUp().onTrue(climberSubsystem.descendCommand());
 
-    scoringController.a().onTrue(shoulderSubsystem.ShoulderToLevel1().alongWith(wristSubsystem.WristToLevel1()));
-    scoringController.x().onTrue(shoulderSubsystem.ShoulderToLevel2().alongWith(wristSubsystem.WristToLevel2()));
-    scoringController.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
-    scoringController.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
+    // scoringController.a().onTrue(shoulderSubsystem.ShoulderToLevel1().alongWith(wristSubsystem.WristToLevel1()));
+    // scoringController.x().onTrue(shoulderSubsystem.ShoulderToLevel2().alongWith(wristSubsystem.WristToLevel2()));
+    // scoringController.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
+    // scoringController.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
 
     //////////////////////////////////////////////////////
 
