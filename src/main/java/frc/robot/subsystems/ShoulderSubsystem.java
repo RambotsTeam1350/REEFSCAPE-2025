@@ -2,118 +2,83 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import edu.wpi.first.units.measure.Angle;
-
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShoulderSubsystem extends SubsystemBase {
-    private final TalonFX shoulderMotor;
-    private final double gearBoxRatio = 9;
-    public final StatusSignal<Angle> position;
+    public static final class Constants {
+        public static final int MOTOR_ID = 18;
+        public static final double GEARBOX_RATIO = 9;
 
-public ShoulderSubsystem() {
+        public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs().withKP(4.8).withKI(0).withKD(0.1)
+                .withKV(0.12).withKA(0.01).withKS(0.25);
+        public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(80).withMotionMagicAcceleration(160).withMotionMagicJerk(1600);
+        public static final TalonFXConfiguration TALON_FX_CONFIGURATION = new TalonFXConfiguration()
+                .withSlot0(SLOT0_CONFIGS).withMotionMagic(MOTION_MAGIC_CONFIGS);
+    }
 
-shoulderMotor = new TalonFX(18);
-position = shoulderMotor.getPosition();
+    private final TalonFX motor;
 
-TalonFXConfiguration cfg = new TalonFXConfiguration();
-    cfg.Slot0.kP = 4.8; // P value: Position
-    cfg.Slot0.kI = 0; // I value: Integral
-    cfg.Slot0.kD = 0.1; // D value: Derivative
-    cfg.Slot0.kV = 0.12; // V value: Velocity
-    //cfg.Slot0.kG = 0.1; // G value: Feedforward
-    cfg.Slot0.kA = 0.01; // A value: Acceleration
-    cfg.Slot0.kS = 0.25; // S value: Soft Limit
+    private StatusSignal<Angle> motorPosition;
 
-MotionMagicConfigs mm = cfg.MotionMagic;
-    mm.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    mm.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    mm.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    private final MotionMagicVoltage motorMotionMagicVoltage;
 
-    shoulderMotor.getConfigurator().apply(cfg);
-}
+    public ShoulderSubsystem() {
+        this.motor = new TalonFX(Constants.MOTOR_ID);
 
-private double degreesWithGearBoxRatio(double degrees) {
-    // Assuming 2048 units per revolution and a gear ratio of 20/1
-    //double unitsPerRevolution = 2048;
-    return (degrees / 360.0) * gearBoxRatio;
-}
+        this.motorPosition = this.motor.getPosition();
 
-public void periodic() {
-        BaseStatusSignal.refreshAll(position);
-    //System.out.println(position.getValueAsDouble() + " shoulder motor");
-}
+        this.motor.getConfigurator().apply(Constants.TALON_FX_CONFIGURATION);
 
-public Command ShoulderToRestPosition() {
+        this.motorMotionMagicVoltage = new MotionMagicVoltage(0);
+    }
 
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
+    @Override
+    public void periodic() {
+        BaseStatusSignal.refreshAll(this.motorPosition);
+    }
 
-        Commands.runOnce (() -> shoulderMotor.setControl(m_request.withPosition(0)))
-    );
-}
+    public Command restPositionCommand() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(0))));
+    }
 
-public Command ShoulderToLevel1() {
+    public Command level1Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(11.8))));
+    }
 
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
+    public Command level2Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(-2))));
+    }
 
-        Commands.runOnce (() -> shoulderMotor.setControl(m_request.withPosition(11.8)))
-    );
-}
+    public Command level3Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(-2))));
+    }
 
-public Command ShoulderToLevel2() {
+    public Command level4Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(-1))));
+    }
 
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-2)))
-    );
-}
+    public Command coralStationCommand() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(7))));
+    }
 
-public Command ShoulderToLevel3() {
-
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-2)))
-    );
-}
-
-public Command ShoulderToLevel4() {
-
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-1)))
-    );
-}
-
-public Command ShoulderToCoralStation() {
-
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(7)))
-    );
-}
-
-public Command ShoulderToLevelBarge() {
-
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(12)))
-    );
-}
-// there may be other commands for other angles of the shoulder added later
-
+    public Command levelBargeCommand() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(12))));
+    }
 }

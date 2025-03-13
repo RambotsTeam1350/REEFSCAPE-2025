@@ -1,127 +1,117 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-
-import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class ElevatorSubsystem extends SubsystemBase {
-    private final TalonFX elevatorMotorOne;
-    private final TalonFX elevatorMotorTwo;
-    private final double gearBoxRatio = 12;
-    public final StatusSignal<Angle> position1;
-    public final StatusSignal<Angle> position2;
+    public static final class Constants {
+        public static final int MOTOR_1_ID = 16;
+        public static final int MOTOR_2_ID = 17;
+        public static final double GEARBOX_RATIO = 12;
+
+        public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs().withKP(4.8).withKI(0).withKD(0.1)
+                .withKV(0.12).withKA(0.01).withKS(0.25);
+        public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(80).withMotionMagicAcceleration(160).withMotionMagicJerk(1600);
+        public static final TalonFXConfiguration TALON_FX_CONFIGURATION = new TalonFXConfiguration()
+                .withSlot0(SLOT0_CONFIGS).withMotionMagic(MOTION_MAGIC_CONFIGS);
+    }
+
+    private final TalonFX motor1;
+    private final TalonFX motor2;
+
+    private StatusSignal<Angle> motor1Position;
+    private StatusSignal<Angle> motor2Position;
+
+    private final MotionMagicVoltage motor1MotionMagicVoltageRequest;
+    private final MotionMagicVoltage motor2MotionMagicVoltageRequest;
 
     public ElevatorSubsystem() {
-        elevatorMotorOne = new TalonFX(16);
-        elevatorMotorTwo = new TalonFX(17);
-        position1 = elevatorMotorOne.getPosition();
-        position2 = elevatorMotorTwo.getPosition();
+        this.motor1 = new TalonFX(Constants.MOTOR_1_ID);
+        this.motor2 = new TalonFX(Constants.MOTOR_2_ID);
 
-        TalonFXConfiguration cfg = new TalonFXConfiguration();
-        cfg.Slot0.kP = 4.8; // P value: Position
-        cfg.Slot0.kI = 0; // I value: Integral
-        cfg.Slot0.kD = 0.1; // D value: Derivative
-        cfg.Slot0.kV = 0.12; // V value: Velocity
-        //cfg.Slot0.kG = 0.1; // G value: Feedforward
-        cfg.Slot0.kA = 0.01; // A value: Acceleration
-        cfg.Slot0.kS = 0.25; // S value: Soft Limit
-    
-        MotionMagicConfigs mm = cfg.MotionMagic;
-    mm.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    mm.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    mm.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-    
-    elevatorMotorOne.getConfigurator().apply(cfg);
-    elevatorMotorTwo.getConfigurator().apply(cfg);
+        this.motor1Position = this.motor1.getPosition();
+        this.motor2Position = this.motor2.getPosition();
 
-}
+        this.motor1.getConfigurator().apply(Constants.TALON_FX_CONFIGURATION);
+        this.motor2.getConfigurator().apply(Constants.TALON_FX_CONFIGURATION);
 
-private double degreesWithGearBoxRatio(double degrees) {
-    // Assuming 2048 units per revolution and a gear ratio of 9:1
-    //double unitsPerRevolution = 2048;
-    return (degrees / 360.0) * gearBoxRatio;
-}
+        this.motor1MotionMagicVoltageRequest = new MotionMagicVoltage(0);
+        this.motor2MotionMagicVoltageRequest = new MotionMagicVoltage(0);
+    }
 
-public void periodic() {
-    BaseStatusSignal.refreshAll(position1, position2);
-    //System.out.println(position1.getValueAsDouble() + " elevator motor 1");
-    //System.out.println(position2.getValueAsDouble() + " elevator motor 2");
-}
+    @Override
+    public void periodic() {
+        BaseStatusSignal.refreshAll(this.motor1Position, this.motor2Position);
+        System.out.println(motor1Position.getValueAsDouble() + " elevator motor 1");
+        System.out.println(motor2Position.getValueAsDouble() + " elevator motor 2");
+    }
 
-public Command RestPositionCommand() {
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(0))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(0)))
-    );
-}
+    private double degreesWithGearboxRatio(double degrees) {
+        return (degrees / 360.0) * Constants.GEARBOX_RATIO;
+    }
 
-public Command L1Command() {
+    public Command restPositionCommand() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor1
+                        .setControl(
+                                this.motor1MotionMagicVoltageRequest.withPosition(0))),
+                Commands.runOnce(() -> this.motor2
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(0))));
+    }
 
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(7.7))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-7.8)))
-    );
-}
+    public Command l1Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor1
+                        .setControl(
+                                this.motor1MotionMagicVoltageRequest.withPosition(7.7))),
+                Commands.runOnce(() -> this.motor2
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-7.8))));
+    }
 
-public Command L2Command() {
-    // create a Motion Magic request, voltage output
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-   //System.out.println();
-    return Commands.sequence(
-       
-    // set target position to 100 rotations
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(1.8))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-1.9)))
-    );
-}
+    public Command l2Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor1
+                        .setControl(
+                                this.motor1MotionMagicVoltageRequest.withPosition(1.8))),
+                Commands.runOnce(() -> this.motor2
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-1.9))));
+    }
 
-public Command L3Command() {
-final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-return Commands.sequence(
-    
-    Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(31))),
-    Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-32)))
-);
-}
+    public Command l3Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor1
+                        .setControl(
+                                this.motor1MotionMagicVoltageRequest.withPosition(31))),
+                Commands.runOnce(() -> this.motor2
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-32))));
+    }
 
-public Command L4Command() {
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(42))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-43)))
+    public Command l4Command() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor1
+                        .setControl(
+                                this.motor1MotionMagicVoltageRequest.withPosition(42))),
+                Commands.runOnce(() -> this.motor2
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-43))));
+    }
 
-    );
-
-}
-
-public Command LBargeCommand() {
-
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    return Commands.sequence(
-        
-        Commands.runOnce (() -> elevatorMotorOne.setControl(m_request.withPosition(44))),
-        Commands.runOnce (() -> elevatorMotorTwo.setControl(m_request.withPosition(-44)))
-    );
-}
-
+    public Command lBargeCommand() {
+        return Commands.sequence(
+                Commands.runOnce(() -> this.motor1
+                        .setControl(
+                                this.motor1MotionMagicVoltageRequest.withPosition(44))),
+                Commands.runOnce(() -> this.motor2
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-44))));
+    }
 }
