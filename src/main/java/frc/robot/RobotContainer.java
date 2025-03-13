@@ -31,6 +31,7 @@ import frc.robot.subsystems.vision.LimelightSubsystem;
 public class RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController scoringController = new CommandXboxController(1);
 
   // Subsystems
   private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
@@ -45,14 +46,14 @@ public class RobotContainer {
       Inches.of(11.5).unaryMinus(),
       new Rotation3d(0, 0, 0));
 
-  private final LimelightSubsystem limelightFive = new LimelightSubsystem(
+  private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
       new LimelightConfig("limelight-five", frontLeftLimelightPose));
 
-  // private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+  // private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
   // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
   // Inches.of(8.25).in(Meters), 0, 0, 0));
 
-  private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+  private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
       new LimelightConfig("limelight-fifteen", frontRightLimelightPose));
 
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -92,6 +93,9 @@ public class RobotContainer {
             // negative X (left)
             ));
 
+    //////////////////////////////////////////////////////
+    /// Driver controls
+    //////////////////////////////////////////////////////
     driverController.a().whileTrue(drivetrain.applyRequest(() -> drivetrain.brakeRequest));
     driverController.b().whileTrue(drivetrain.applyRequest(
         () -> drivetrain.pointRequest.withModuleDirection(
@@ -112,8 +116,8 @@ public class RobotContainer {
     // reset the field-centric heading on start press
     driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    driverController.leftBumper().whileTrue(new AlignToReef(drivetrain, limelightFifteen));
-    driverController.rightBumper().whileTrue(new AlignToReef(drivetrain, limelightFive));
+    driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontRight));
+    driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft));
 
     driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
@@ -130,6 +134,20 @@ public class RobotContainer {
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
                 .withVelocityY(TunerConstants.MaxSpeed * 0.25 * -1.0)));
+
+    //////////////////////////////////////////////////////
+    /// Scoring controls
+    //////////////////////////////////////////////////////
+
+    // scoringController.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
+    // scoringController.x().onTrue(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
+    // scoringController.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
+    // scoringController.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
+
+    // scoringController.leftTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
+    // scoringController.leftTrigger().onTrue(coralModuleSubsystem.deliverCoral()));
+
+    //////////////////////////////////////////////////////
 
     drivetrain.registerTelemetry(drivetrain.logger::telemeterize);
   }
