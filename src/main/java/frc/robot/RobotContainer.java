@@ -21,7 +21,6 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.subsystems.Limelights.*;
 import frc.robot.commands.AlignToReef;
 import frc.robot.commands.FollowAprilTag;
 import frc.robot.lib.LimelightConfig;
@@ -30,97 +29,103 @@ import frc.robot.subsystems.vision.LimelightSubsystem;
 
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
-    private final Telemetry logger = new Telemetry(MaxSpeed);
-
-    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-    private final ElevatorSubsystem elevatorSusbsystem = new ElevatorSubsystem();
-    private final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem();
-    private final WristSubsystem wristSubsystem = new WristSubsystem();
-    private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-    private final LimelightSubsystemV2 limelightSubsystemV2 = new LimelightSubsystemV2();
-
+    // Controllers
+    private final CommandXboxController driverController = new CommandXboxController(0);
     
+    // Subsystems
+    private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
+    // private final LimelightSubsystem limelightThree = new LimelightSubsystem(
+    // new LimelightConfig("limelight-seven", Inches.of(10.5).in(Meters),
+    // Inches.of(9.375).in(Meters),
+    // Inches.of(11.5).in(Meters), 0, 0, 0));
     
-
-    private final CommandXboxController joystick1 = new CommandXboxController(0); // Drive Base controller
-    private final CommandXboxController joystick2 = new CommandXboxController(1); // Upper Mech conroller
-
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final LimelightSubsystem limelightFive = new LimelightSubsystem(
+    new LimelightConfig("limelight-five", Inches.of(10.5).in(Meters), Inches.of(9.375).in(Meters),
+    Inches.of(11.5).unaryMinus().in(Meters), 0, 0, 0));
     
-    private final AlignToReefTagRelative AlignToReefTagRelative = new AlignToReefTagRelative(false, drivetrain);
+    // private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+    // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
+    // Inches.of(8.25).in(Meters), 0, 0, 0));
+    
+    private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+    new LimelightConfig("limelight-fifteen", Inches.of(10.5).in(Meters),
+    Inches.of(9.375).in(Meters),
+    Inches.of(11.5).in(Meters), 0, 0, 0));
+    
     public RobotContainer() {
-        configureBindings();
+        configureDrivetrainBindings();
     }
-
-    private void configureBindings() {
+    
+    private void configureDrivetrainBindings() {
+        /* Setting up bindings for necessary control of the swerve drive platform */
+        
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick1.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick1.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick1.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
-
-        //joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        //joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            // point.withModuleDirection(new Rotation2d(-joystick1.getLeftY(), -joystick1.getLeftX()));
-
+        // Drivetrain will execute this command periodically
+        drivetrain
+        .applyRequest(() -> drivetrain.driveRequest
+        .withVelocityX(-driverController.getLeftY()
+        * TunerConstants.MaxSpeed) // Drive
+        // forward
+        // with
+        // negative Y
+        // (forward)
+        .withVelocityY(-driverController.getLeftX()
+        * TunerConstants.MaxSpeed) // Drive left
+        // with
+        // negative
+        // X (left)
+        .withRotationalRate(-driverController.getRightX()
+        * TunerConstants.MaxAngularRate) // Drive
+        // counterclockwise
+        // with
+        // negative X (left)
+        ));
+        
+        driverController.a().whileTrue(drivetrain.applyRequest(() -> drivetrain.brakeRequest));
+        driverController.b().whileTrue(drivetrain.applyRequest(
+        () -> drivetrain.pointRequest.withModuleDirection(
+        new Rotation2d(-driverController.getLeftY(),
+        -driverController.getLeftX()))));
+        
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick1.back().and(joystick1.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick1.back().and(joystick1.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick1.start().and(joystick1.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick1.start().and(joystick1.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        drivetrain.registerTelemetry(logger::telemeterize);
-   
-        ////////////////////////////////////////////////////////////////////////////////////
-        /// Driver controls
-        ////////////////////////////////////////////////////////////////////////////////////
-
-        // reset the field-centric heading on start button press
-        joystick1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-        //joystick1.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
-        //joystick1.x().onFalse(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
-        //joystick1.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
-        //joystick1.y().onFalse(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
-
-        //joystick1.leftTrigger().onTrue(limelightSubsystem.alignToCoralReef("left"));
-        joystick1.leftBumper().onTrue(AlignToReefTagRelative);
-        joystick1.leftTrigger().onTrue(limelightSubsystemV2.alignToCoralReef("left"));
-        joystick1.rightTrigger().onTrue(limelightSubsystem.alignToCoralReef("right"));
-
-        ////////////////////////////////////////////////////////////////////////////////////
-        /// Scoring controls
-        ////////////////////////////////////////////////////////////////////////////////////
-        joystick2.povDown().onTrue(climberSubsystem.ascendCommand());
-        joystick1.povUp().onTrue(climberSubsystem.descendCommand());
-
-        joystick2.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
-        joystick2.x().onTrue(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
-        joystick2.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
-        joystick2.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
-
-        //joystick2.leftBumper().onTrue(shoulderSubsystem.ShoulderToLevel2());
-        joystick2.leftTrigger().onTrue(elevatorSusbsystem.LBargeCommand().alongWith(shoulderSubsystem.ShoulderToLevelBarge()).alongWith(wristSubsystem.WristToLevelBarge()));
-        // joystick2.leftTrigger().onTrue(coralModuleSubsystem.deliverCoral()));
+        driverController.back().and(driverController.y())
+        .whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driverController.back().and(driverController.x())
+        .whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driverController.start().and(driverController.y())
+        .whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driverController.start().and(driverController.x())
+        .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        
+        // reset the field-centric heading on left bumper press
+        driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        
+        driverController.leftBumper().whileTrue(new AlignToReef(drivetrain, limelightFifteen));
+        driverController.rightBumper().whileTrue(new AlignToReef(drivetrain, limelightFive));
+        driverController.y().onTrue(new AlignToReef(drivetrain, limelightFive).withTimeout(10));
+        
+        driverController.povUp().whileTrue(
+        drivetrain.applyRequest(() -> drivetrain.driveRequest
+        .withVelocityX(TunerConstants.MaxSpeed * 0.25)));
+        driverController.povDown().whileTrue(
+        drivetrain.applyRequest(
+        () -> drivetrain.driveRequest
+        .withVelocityX(TunerConstants.MaxSpeed * 0.25 * -1.0)));
+        driverController.povLeft().whileTrue(
+        drivetrain.applyRequest(
+        () -> drivetrain.driveRequest
+        .withVelocityY(TunerConstants.MaxSpeed * 0.25)));
+        driverController.povRight().whileTrue(
+        drivetrain.applyRequest(
+        () -> drivetrain.driveRequest
+        .withVelocityY(TunerConstants.MaxSpeed * 0.25 * -1.0)));
+        
+        drivetrain.registerTelemetry(drivetrain.logger::telemeterize);
     }
-
-
+    
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
     }
