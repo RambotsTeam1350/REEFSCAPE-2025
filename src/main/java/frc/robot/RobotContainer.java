@@ -92,6 +92,9 @@ public class RobotContainer {
             // negative X (left)
             ));
 
+    //////////////////////////////////////////////////////
+    /// Driver controls
+    //////////////////////////////////////////////////////
     driverController.a().whileTrue(drivetrain.applyRequest(() -> drivetrain.brakeRequest));
     driverController.b().whileTrue(drivetrain.applyRequest(
         () -> drivetrain.pointRequest.withModuleDirection(
@@ -112,8 +115,8 @@ public class RobotContainer {
     // reset the field-centric heading on start press
     driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    driverController.leftBumper().whileTrue(new AlignToReef(drivetrain, limelightFifteen));
-    driverController.rightBumper().whileTrue(new AlignToReef(drivetrain, limelightFive));
+    driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFifteen));
+    driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFive));
 
     driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
