@@ -103,8 +103,8 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         
-        driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFifteen));
-        driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFive));
+        driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFifteen).withTimeout(10));
+        driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFive).withTimeout(10));
         driverController.y().onTrue(new AlignToReef(drivetrain, limelightFive).withTimeout(10));
         
         driverController.povUp().whileTrue(
