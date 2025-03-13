@@ -105,7 +105,6 @@ public class RobotContainer {
         
         driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFifteen).withTimeout(10));
         driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFive).withTimeout(10));
-        driverController.y().onTrue(new AlignToReef(drivetrain, limelightFive).withTimeout(10));
         
         driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
