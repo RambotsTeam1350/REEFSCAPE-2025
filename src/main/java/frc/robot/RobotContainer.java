@@ -39,15 +39,15 @@ public class RobotContainer {
     // Inches.of(9.375).in(Meters),
     // Inches.of(11.5).in(Meters), 0, 0, 0));
     
-    private final LimelightSubsystem limelightFive = new LimelightSubsystem(
+    private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
     new LimelightConfig("limelight-five", Inches.of(10.5).in(Meters), Inches.of(9.375).in(Meters),
     Inches.of(11.5).unaryMinus().in(Meters), 0, 0, 0));
     
-    // private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+    // private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
     // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
     // Inches.of(8.25).in(Meters), 0, 0, 0));
     
-    private final LimelightSubsystem limelightFifteen = new LimelightSubsystem(
+    private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
     new LimelightConfig("limelight-fifteen", Inches.of(10.5).in(Meters),
     Inches.of(9.375).in(Meters),
     Inches.of(11.5).in(Meters), 0, 0, 0));
@@ -103,8 +103,8 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         
-        driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFifteen).withTimeout(10));
-        driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFive).withTimeout(10));
+        driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontRight).withTimeout(10));
+        driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft).withTimeout(10));
         
         driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
