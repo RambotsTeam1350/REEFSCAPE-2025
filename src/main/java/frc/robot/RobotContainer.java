@@ -49,7 +49,8 @@ public class RobotContainer {
   private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
       new LimelightConfig("limelight-five", frontLeftLimelightPose));
 
-  // private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
+  // private final LimelightSubsystem limelightFrontRight = new
+  // LimelightSubsystem(
   // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
   // Inches.of(8.25).in(Meters), 0, 0, 0));
 
@@ -139,7 +140,7 @@ public class RobotContainer {
     /// Scoring controls
     //////////////////////////////////////////////////////
 
-    scoringController.povLeft().onTrue(coralModuleSubsystem.IntakeCoral());
+    scoringController.povLeft().onTrue(coralModuleSubsystem.intakeCoral());
     scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
 
     scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
