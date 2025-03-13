@@ -77,6 +77,7 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
     tagID = LimelightHelpers.getFiducialID("limelight-three");
 
     System.out.println("command did run");
+    
   }
 
   @Override
@@ -88,14 +89,14 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
       SmartDashboard.putNumber("x", postions[1]);
       SmartDashboard.putNumber("z", postions[2]);
 
-      double xSpeed = xController.calculate(postions[1]);
+      double xSpeed = xController.calculate(postions[0]);
       SmartDashboard.putNumber("xspeed", xSpeed);
       double ySpeed = -yController.calculate(postions[2]);
       double rotValue = -rotController.calculate(postions[4]);
 
       //drivebase.drive(new Translation2d(xSpeed, ySpeed), rotValue, false);
       drivebase.setControl(
-     drive.withVelocityX(xSpeed) // Drive forward with negative Y (forward)
+     drive.withVelocityX(Math.abs(xSpeed)) // Drive forward with negative Y (forward)
           .withVelocityY(0) // Drive left with negative X (left)
           .withRotationalRate(rotValue) // Drive counterclockwise with negative X (left)
      
@@ -120,6 +121,7 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
     }
 
     SmartDashboard.putNumber("poseValidTimer", stopTimer.get());
+    //System.out.println(postions);
   }
 
   @Override

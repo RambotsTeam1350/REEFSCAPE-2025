@@ -34,7 +34,7 @@ TalonFXConfiguration cfg = new TalonFXConfiguration();
     cfg.Slot0.kS = 0.25; // S value: Soft Limit
 
 MotionMagicConfigs mm = cfg.MotionMagic;
-    mm.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    mm.MotionMagicCruiseVelocity = 120; // Target cruise velocity of 80 rps
     mm.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     mm.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
@@ -49,7 +49,7 @@ private double degreesWithGearBoxRatio(double degrees) {
 
 public void periodic() {
         BaseStatusSignal.refreshAll(position);
-    //System.out.println(position.getValueAsDouble() + " shoulder motor");
+    System.out.println(position.getValueAsDouble() + " shoulder motor");
 }
 
 public Command ShoulderToRestPosition() {
@@ -66,7 +66,7 @@ public Command ShoulderToLevel1() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
 
-        Commands.runOnce (() -> shoulderMotor.setControl(m_request.withPosition(11.8)))
+        Commands.runOnce (() -> shoulderMotor.setControl(m_request.withPosition(-11.8)))
     );
 }
 
@@ -75,7 +75,7 @@ public Command ShoulderToLevel2() {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     return Commands.sequence(
         
-        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-2)))
+        Commands.runOnce(() -> shoulderMotor.setControl(m_request.withPosition(-11)))
     );
 }
 

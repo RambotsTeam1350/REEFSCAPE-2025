@@ -60,8 +60,8 @@ private double degreesWithGearBoxRatio(double degrees) {
 
 public void periodic() {
     BaseStatusSignal.refreshAll(position1, position2);
-    //System.out.println(position1.getValueAsDouble() + " elevator motor 1");
-    //System.out.println(position2.getValueAsDouble() + " elevator motor 2");
+    System.out.println(position1.getValueAsDouble() + " elevator motor 1");
+    System.out.println(position2.getValueAsDouble() + " elevator motor 2");
 }
 
 public Command RestPositionCommand() {

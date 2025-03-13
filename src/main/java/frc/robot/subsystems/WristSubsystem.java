@@ -43,7 +43,7 @@ MotionMagicConfigs mm = cfg.MotionMagic;
 
 public void periodic() {
         BaseStatusSignal.refreshAll(position);
-    //System.out.println(position.getValueAsDouble() + " wrist motor");
+    System.out.println(position.getValueAsDouble() + " wrist motor");
 }
 
 public Command WristToRestPosition() {

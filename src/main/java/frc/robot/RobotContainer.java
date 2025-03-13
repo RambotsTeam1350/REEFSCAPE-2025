@@ -23,6 +23,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.Limelights.*;
+import frc.robot.subsystems.CoralModuleSubsystem;
 
 
 public class RobotContainer {
@@ -44,6 +45,7 @@ public class RobotContainer {
     private final WristSubsystem wristSubsystem = new WristSubsystem();
     private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     private final LimelightSubsystemV2 limelightSubsystemV2 = new LimelightSubsystemV2();
+    private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
 
     
     
@@ -103,11 +105,15 @@ public class RobotContainer {
         ////////////////////////////////////////////////////////////////////////////////////
         /// Scoring controls
         ////////////////////////////////////////////////////////////////////////////////////
+        
+        joystick2.povLeft().onTrue(coralModuleSubsystem.IntakeCoral());
+        joystick2.povRight().onTrue(coralModuleSubsystem.deliverCoral());
+
         joystick2.povDown().onTrue(climberSubsystem.ascendCommand());
         joystick1.povUp().onTrue(climberSubsystem.descendCommand());
 
-        joystick2.a().onTrue(elevatorSusbsystem.L1Command().alongWith(shoulderSubsystem.ShoulderToLevel1()).alongWith(wristSubsystem.WristToLevel1()));
-        joystick2.x().onTrue(elevatorSusbsystem.L2Command().alongWith(shoulderSubsystem.ShoulderToLevel2()).alongWith(wristSubsystem.WristToLevel2()));
+        joystick2.a().onTrue(shoulderSubsystem.ShoulderToLevel1().alongWith(wristSubsystem.WristToLevel1()));
+        joystick2.x().onTrue(shoulderSubsystem.ShoulderToLevel2().alongWith(wristSubsystem.WristToLevel2()));
         joystick2.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
         joystick2.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
 

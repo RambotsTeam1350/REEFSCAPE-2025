@@ -17,6 +17,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -24,9 +25,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralModuleSubsystem {
     private final TalonFX moduleMotor;
-    private final double gearBoxRatio = 9;
+    private final double gearBoxRatio = 5;
     public final StatusSignal<Angle> position;
+    
+    //private final double VoltageDifference = moduleMotor.getDiferentialAngularVelocity();
 
+    
     public CoralModuleSubsystem() {
 
         moduleMotor = new TalonFX(19);
@@ -53,24 +57,44 @@ public class CoralModuleSubsystem {
     public void periodic() {
            // BaseStatusSignal.refreshAll(position);
         //System.out.println(position.getValueAsDouble() + " module motor");
+
+        //SmartDashboard.putNumber("Voltage Difference", VoltageDifference);
     }
 
 
     public Command IntakeCoral() {
-
         final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
         return Commands.sequence(
-
-            Commands.runOnce (() -> moduleMotor.setControl(m_request.withPosition(50))) // encoder value
-
+            Commands.runOnce (() -> moduleMotor.setControl(m_request.withPosition(15)))
         );
+
     }
 
     public Command deliverCoral() {
       final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
       return Commands.sequence(
-          // Commands.runOnce (() -> moduleMotor.setControl(m_request.withPosition(-50)))
+          Commands.runOnce (() -> moduleMotor.setControl(m_request.withPosition(0)))
       );
     }
 
   }
+
+
+  /*
+   
+if (VoltageDifference > 0.5) {
+
+ModuleMotor.run(0.2).wait(0.02);
+
+}
+
+
+public void execute() {
+
+
+
+}
+
+
+
+   */
