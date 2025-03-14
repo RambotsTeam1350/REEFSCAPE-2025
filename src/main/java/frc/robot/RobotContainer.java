@@ -47,7 +47,7 @@ public class RobotContainer {
       new Rotation3d(0, 0, 0));
 
   private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
-      new LimelightConfig("limelight-five", frontLeftLimelightPose));
+      new LimelightConfig("limelight-three", frontLeftLimelightPose));
 
   // private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
   // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
@@ -116,8 +116,8 @@ public class RobotContainer {
     // reset the field-centric heading on start press
     driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    driverController.leftTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontRight));
-    driverController.rightTrigger().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft));
+    driverController.leftBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontRight));
+    driverController.rightBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft));
 
     driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
@@ -139,16 +139,21 @@ public class RobotContainer {
     /// Scoring controls
     //////////////////////////////////////////////////////
 
-    scoringController.povLeft().onTrue(coralModuleSubsystem.IntakeCoral());
+    scoringController.leftBumper().onTrue(coralModuleSubsystem.IntakeCoralCommand());
     scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
 
     scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
     scoringController.povUp().onTrue(climberSubsystem.descendCommand());
 
-    // scoringController.a().onTrue(shoulderSubsystem.ShoulderToLevel1().alongWith(wristSubsystem.WristToLevel1()));
-    // scoringController.x().onTrue(shoulderSubsystem.ShoulderToLevel2().alongWith(wristSubsystem.WristToLevel2()));
-    // scoringController.b().onTrue(elevatorSusbsystem.L3Command().alongWith(shoulderSubsystem.ShoulderToLevel3()).alongWith(wristSubsystem.WristToLevel3()));
-    // scoringController.y().onTrue(elevatorSusbsystem.L4Command().alongWith(shoulderSubsystem.ShoulderToLevel4()).alongWith(wristSubsystem.WristToLevel4()));
+    scoringController.a().onTrue(elevatorSubsystem.l1Command().alongWith(shoulderSubsystem.level1Command()).alongWith(wristSubsystem.level1Command()));
+    scoringController.x().onTrue(elevatorSubsystem.l2Command().alongWith(shoulderSubsystem.level2Command()).alongWith(wristSubsystem.level2Command()));
+    scoringController.b().onTrue(elevatorSubsystem.l3Command().alongWith(shoulderSubsystem.level3Command()).alongWith(wristSubsystem.level3Command()));
+    scoringController.y().onTrue(elevatorSubsystem.l4Command().alongWith(shoulderSubsystem.level4Command()).alongWith(wristSubsystem.level4Command()));
+    scoringController.leftTrigger().onTrue(elevatorSubsystem.lBargeCommand().alongWith(shoulderSubsystem.levelBargeCommand()).alongWith(wristSubsystem.levelBargeCommand()));
+
+    scoringController.back().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.restPositionCommand()).alongWith(wristSubsystem.restPositionCommand()));
+    scoringController.start().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.coralStationCommand()).alongWith(wristSubsystem.coralStationCommand()));
+
 
     //////////////////////////////////////////////////////
 

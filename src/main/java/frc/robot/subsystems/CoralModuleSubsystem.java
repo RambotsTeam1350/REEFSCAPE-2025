@@ -44,17 +44,23 @@ public class CoralModuleSubsystem extends SubsystemBase {
     this.hasCoral = false;
   }
 
-    public Command IntakeCoral() {
+    public Command IntakeCoralCommand() {
         final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
         return Commands.sequence(
-            Commands.runOnce (() -> motor.setControl(m_request.withPosition(15)))
+            Commands.runOnce (() -> this.resetCoralState()),
+            Commands.runOnce (() -> this.motor.set(0.5)),
+            Commands.waitUntil(this::hasCoral),
+            Commands.runOnce (() -> this.motor.set(0.2)),
+            Commands.waitSeconds(2)
         );
     }
 
     public Command deliverCoral() {
-        final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+        
         return Commands.sequence(
-            Commands.runOnce (() -> motor.setControl(m_request.withPosition(0)))
+            Commands.runOnce(() -> motor.set(0.2)),
+            Commands.waitSeconds(2),
+            Commands.runOnce(() -> motor.set(0))
         );
     }
 }
