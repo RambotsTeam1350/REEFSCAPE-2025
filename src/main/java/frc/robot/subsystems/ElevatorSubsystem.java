@@ -83,27 +83,27 @@ public class ElevatorSubsystem extends SubsystemBase {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(1.8))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(0))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-1.9))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(0))));
     }
 
     public Command l3Command() {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(31))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(-21.6))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-32))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(21.21))));
     }
 
     public Command l4Command() {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(42))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(-40.87))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-43))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(40.37))));
     }
 
     public Command lBargeCommand() {

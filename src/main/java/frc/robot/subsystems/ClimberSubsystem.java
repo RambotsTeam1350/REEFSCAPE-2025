@@ -15,7 +15,7 @@ public class ClimberSubsystem extends SubsystemBase {
         public static final int MOTOR_1_ID = 15;
         public static final int MOTOR_2_ID = 14;
 
-        public static final double GEARBOX_RATIO = 20.0;
+        public static final double GEARBOX_RATIO = 60;
         public static final double ROTATION_AMOUNT = 0.375;
 
         public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs().withKP(4.8).withKI(0).withKD(0.1)
@@ -81,7 +81,7 @@ public class ClimberSubsystem extends SubsystemBase {
                 Commands.runOnce(() -> this.motor2
                         .setControl(this.motor2MotionMagicVoltageRequest.withPosition(degreesWithGearboxRatio(-135)))));
     }
-
+    
     public Command descendCommand() {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1

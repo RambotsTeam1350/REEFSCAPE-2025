@@ -35,11 +35,15 @@ public class WristSubsystem extends SubsystemBase {
     public WristSubsystem() {
         this.motor = new TalonFX(Constants.MOTOR_ID);
         this.motorPosition = this.motor.getPosition();
+
+        this.motorMotionMagicVoltage = new MotionMagicVoltage(0);
+        
     }
 
     @Override
     public void periodic() {
         BaseStatusSignal.refreshAll(this.motorPosition);
+        System.out.println("Wrist Position " + motorPosition.getValueAsDouble());
     }
 
     public Command restPositionCommand() {
@@ -54,22 +58,22 @@ public class WristSubsystem extends SubsystemBase {
 
     public Command level2Command() {
         return Commands.sequence(
-                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(9))));
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(-8.06))));
     }
 
     public Command level3Command() {
         return Commands.sequence(
-                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(9))));
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(-8.05))));
     }
 
     public Command level4Command() {
         return Commands.sequence(
-                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(0.8))));
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(3.74))));
     }
 
     public Command coralStationCommand() {
         return Commands.sequence(
-                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(1.5))));
+                Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(-2.96))));
     }
 
     public Command levelBargeCommand() {
