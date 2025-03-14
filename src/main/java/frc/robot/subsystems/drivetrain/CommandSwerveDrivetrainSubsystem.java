@@ -62,7 +62,7 @@ public class CommandSwerveDrivetrainSubsystem extends TunerSwerveDrivetrain impl
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     public final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
     public final SwerveRequest.PointWheelsAt pointRequest = new SwerveRequest.PointWheelsAt();
-    public final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed * 0.9);
+    public final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed * 0.75);
 
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
@@ -144,6 +144,8 @@ public class CommandSwerveDrivetrainSubsystem extends TunerSwerveDrivetrain impl
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        configureAutoBuilder();
     }
 
     /**
