@@ -71,7 +71,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureDrivetrainBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser("simple right");
+    autoChooser = AutoBuilder.buildAutoChooser("simple 3FT");
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
