@@ -6,9 +6,12 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.nio.file.Path;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -175,16 +178,25 @@ public class RobotContainer {
     return this.autoChooser.getSelected();
     
   }*/
-  public Command getAutonomousCommand() {
-    try{
-        // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("simple foward middle red");
-
-        // Create a path following command using AutoBuilder. This will also trigger event markers.
-        return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
+  
+    public Command getAutonomousCommand() {
+      try{
+          // Load the path you want to follow using its name in the GUI
+          PathPlannerPath path = PathPlannerPath.fromPathFile("red middle");
+  
+          // Create a path following command using AutoBuilder. This will also trigger event markers.
+          return AutoBuilder.followPath(path);
+      } catch (Exception e) {
+          DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+          return Commands.none();
+      }
     }
-  }
+  // ...
+
+ /*  public Command getAutonomousCommand() {
+    // This method loads the auto when it is called, however, it is recommended
+    // to first load your paths/autos when code starts, then return the
+    // pre-loaded auto/path
+    return new PathPlannerAuto( "");
+  }*/
 }
