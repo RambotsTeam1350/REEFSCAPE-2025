@@ -170,6 +170,8 @@ public class CommandSwerveDrivetrainSubsystem extends TunerSwerveDrivetrain impl
         super(drivetrainConstants, odometryUpdateFrequency, modules);
         if (Utils.isSimulation()) {
             startSimThread();
+
+            configureAutoBuilder();
         }
     }
 
