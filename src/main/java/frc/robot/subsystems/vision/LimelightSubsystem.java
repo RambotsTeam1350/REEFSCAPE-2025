@@ -60,9 +60,35 @@ public class LimelightSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     this.limelightResults = LimelightHelpers.getLatestResults(this.limelightName);
-    SmartDashboard.putNumber("num" + this.limelightName, this.limelightResults.targets_Fiducials.length);
+    
+    // Output the number of detected fiducials
+    int numFiducials = (this.limelightResults != null && this.limelightResults.targets_Fiducials != null) ? 
+        this.limelightResults.targets_Fiducials.length : 0;
+    SmartDashboard.putNumber("num" + this.limelightName, numFiducials);
+    
+    // Output the currently detected April tag ID
+    int currentTagId = getCurrentAprilTagId();
+    SmartDashboard.putNumber("Current April Tag ID", currentTagId);
+    
+    // Output all detected April tag IDs
+    int[] allTagIds = getAllCurrentAprilTagIds();
+    if (allTagIds.length > 0) {
+      StringBuilder allTags = new StringBuilder();
+      for (int id : allTagIds) {
+        allTags.append(id).append(", ");
+      }
+      // Remove the trailing comma and space
+      if (allTags.length() > 2) {
+        allTags.setLength(allTags.length() - 2);
+      }
+      SmartDashboard.putString("All Detected April Tags", allTags.toString());
+    } else {
+      SmartDashboard.putString("All Detected April Tags", "None");
+    }
+    
+    // Uncomment to use raw fiducials if needed
     // this.fiducials = LimelightHelpers.getRawFiducials(this.limelightName);
-
+    
     // for (RawFiducial fiducial : fiducials) {
     // int id = fiducial.id; // Tag ID
     // double txnc = fiducial.txnc; // X offset (no crosshair)
@@ -119,8 +145,50 @@ public class LimelightSubsystem extends SubsystemBase {
     throw new NoSuchTargetException("No target with ID " + ids + "is in view!");
   }
 
+  /**
+   * Gets the first detected fiducial (April tag) from the Limelight.
+   * 
+   * @return The first detected fiducial
+   * @throws NoSuchTargetException if no fiducials are detected
+   */
   public LimelightTarget_Fiducial getFiducial() {
+    if (this.limelightResults == null || this.limelightResults.targets_Fiducials == null 
+        || this.limelightResults.targets_Fiducials.length == 0) {
+      throw new NoSuchTargetException("No fiducials are in view!");
+    }
     return this.limelightResults.targets_Fiducials[0];
+  }
+  
+  /**
+   * Gets the ID of the first detected fiducial (April tag) from the Limelight.
+   * 
+   * @return The ID of the first detected fiducial, or -1 if no fiducials are detected
+   */
+  public int getCurrentAprilTagId() {
+    try {
+      LimelightTarget_Fiducial fiducial = getFiducial();
+      return (int) fiducial.fiducialID;
+    } catch (NoSuchTargetException e) {
+      return -1;
+    }
+  }
+  
+  /**
+   * Gets all currently detected fiducial (April tag) IDs from the Limelight.
+   * 
+   * @return An array of detected fiducial IDs, or an empty array if no fiducials are detected
+   */
+  public int[] getAllCurrentAprilTagIds() {
+    if (this.limelightResults == null || this.limelightResults.targets_Fiducials == null 
+        || this.limelightResults.targets_Fiducials.length == 0) {
+      return new int[0];
+    }
+    
+    int[] tagIds = new int[this.limelightResults.targets_Fiducials.length];
+    for (int i = 0; i < this.limelightResults.targets_Fiducials.length; i++) {
+      tagIds[i] = (int) this.limelightResults.targets_Fiducials[i].fiducialID;
+    }
+    return tagIds;
   }
 
 }

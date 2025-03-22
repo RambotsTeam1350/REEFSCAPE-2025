@@ -21,9 +21,23 @@ public class AlignToReef extends Command {
   private final LimelightSubsystem limelight;
 
   private static final PIDControllerConfigurable rotationalPidController = new PIDControllerConfigurable(
-      1.8, 0.05, 0, 0.4);
-  private static final PIDControllerConfigurable xPidController = new PIDControllerConfigurable(0.65, 0, 0, 0.06);
-  private static final PIDControllerConfigurable yPidController = new PIDControllerConfigurable(0.65, 0, 0, 0.06);
+      1.5, 0.03, 0.1, 0.4)
+      .withInputFilter(3)
+      .withOutputFilter(2)
+      .withDeadband(0.05)
+      .withOutputRateLimit(0.1);
+  private static final PIDControllerConfigurable xPidController = new PIDControllerConfigurable(
+      0.55, 0, 0.05, 0.06)
+      .withInputFilter(3)
+      .withOutputFilter(2)
+      .withDeadband(0.01)
+      .withOutputRateLimit(0.1);
+  private static final PIDControllerConfigurable yPidController = new PIDControllerConfigurable(
+      0.55, 0, 0.05, 0.06)
+      .withInputFilter(3)
+      .withOutputFilter(2)
+      .withDeadband(0.01)
+      .withOutputRateLimit(0.1);
   private static final SwerveRequest.RobotCentric alignRequest = new SwerveRequest.RobotCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
@@ -47,7 +61,7 @@ public class AlignToReef extends Command {
     LimelightTarget_Fiducial fiducial = null;
     try {
       fiducial = limelight.getFiducial();
-      
+
       Pose3d targetPoseInRobotSpace = fiducial.getTargetPose_CameraSpace();
       double distToRobot = targetPoseInRobotSpace.getZ();
       double sideError = targetPoseInRobotSpace.getX();
@@ -56,21 +70,16 @@ public class AlignToReef extends Command {
 
       double rotationalRate = rotationalPidController.calculate(rotationalError, 0)
           * TunerConstantsPracticeBot.MaxAngularRate
-          * 0.5;
-      final double velocityX = xPidController.calculate(distToRobot, Inches.of(24).in(Meters)) * -1.0
+          * 0.6;
+      final double velocityX = xPidController.calculate(distToRobot, Inches.of(12).in(Meters)) * -1.0
           * TunerConstantsPracticeBot.MaxSpeed
-          * 0.5;
+          * 0.6;
       final double velocityY = yPidController.calculate(sideError, 0) * 1.0 *
-          TunerConstantsPracticeBot.MaxSpeed * 0.5;
+          TunerConstantsPracticeBot.MaxSpeed * 0.6;
 
-      if (!xPidController.atSetpoint() || !yPidController.atSetpoint()) {
-        rotationalRate /= 5;
-      }
-
-      // if (sideError > 0.5) {
-      // rotationalRate = 0;
+      // if (!xPidController.atSetpoint() || !yPidController.atSetpoint()) {
+      //   rotationalRate /= 5;
       // }
-      // double rotationalRate = 0;
 
       // if (rotationalPidController.atSetpoint() && xPidController.atSetpoint() &&
       // yPidController.atSetpoint()) {

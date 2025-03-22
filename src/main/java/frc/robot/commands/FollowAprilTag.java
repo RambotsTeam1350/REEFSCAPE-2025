@@ -20,9 +20,23 @@ public class FollowAprilTag extends Command {
   private final LimelightSubsystem limelight;
 
   private static final PIDControllerConfigurable rotationalPidController = new PIDControllerConfigurable(
-      2.5, 0, 0, 0.1);
-  private static final PIDControllerConfigurable xPidController = new PIDControllerConfigurable(0.7, 0, 0, 0.02);
-  private static final PIDControllerConfigurable yPidController = new PIDControllerConfigurable(0.7, 0, 0, 0.02);
+      2.0, 0, 0.1, 0.1)
+      .withInputFilter(3)
+      .withOutputFilter(2)
+      .withDeadband(0.05)
+      .withOutputRateLimit(0.1);
+  private static final PIDControllerConfigurable xPidController = new PIDControllerConfigurable(
+      0.6, 0, 0.05, 0.02)
+      .withInputFilter(3)
+      .withOutputFilter(2)
+      .withDeadband(0.01)
+      .withOutputRateLimit(0.1);
+  private static final PIDControllerConfigurable yPidController = new PIDControllerConfigurable(
+      0.6, 0, 0.05, 0.02)
+      .withInputFilter(3)
+      .withOutputFilter(2)
+      .withDeadband(0.01)
+      .withOutputRateLimit(0.1);
   private static final SwerveRequest.RobotCentric alignRequest = new SwerveRequest.RobotCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
