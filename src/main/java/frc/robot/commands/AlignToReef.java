@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.TunerConstants;
+import frc.robot.constants.TunerConstantsPracticeBot;
 import frc.robot.lib.PIDControllerConfigurable;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSubsystem;
 import frc.robot.subsystems.vision.LimelightSubsystem;
@@ -45,7 +46,7 @@ public class AlignToReef extends Command {
   public void execute() {
     LimelightTarget_Fiducial fiducial;
     try {
-      fiducial = limelight.getTargetFiducialWithId(21);
+      fiducial = limelight.getTargetFiducialWithId(1);
       Pose3d targetPoseInRobotSpace = fiducial.getTargetPose_CameraSpace();
       double distToRobot = targetPoseInRobotSpace.getZ();
       double sideError = targetPoseInRobotSpace.getX();
@@ -53,13 +54,13 @@ public class AlignToReef extends Command {
       double rotationalError = targetPoseInRobotSpace.getRotation().getY();
 
       double rotationalRate = rotationalPidController.calculate(rotationalError, 0)
-          * TunerConstants.MaxAngularRate
+          * TunerConstantsPracticeBot.MaxAngularRate
           * 0.5;
       final double velocityX = xPidController.calculate(distToRobot, Inches.of(24).in(Meters)) * -1.0
-          * TunerConstants.MaxSpeed
+          * TunerConstantsPracticeBot.MaxSpeed
           * 0.5;
       final double velocityY = yPidController.calculate(sideError, 0) * 1.0 *
-          TunerConstants.MaxSpeed * 0.5;
+          TunerConstantsPracticeBot.MaxSpeed * 0.5;
 
       if (!xPidController.atSetpoint() || !yPidController.atSetpoint()) {
         rotationalRate /= 5;

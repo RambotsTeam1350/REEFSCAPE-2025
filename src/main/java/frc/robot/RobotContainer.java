@@ -29,6 +29,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.commands.AlignToReef;
 import frc.robot.commands.FollowAprilTag;
 import frc.robot.constants.TunerConstants;
+import frc.robot.constants.TunerConstantsPracticeBot;
 import frc.robot.lib.LimelightConfig;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralModuleSubsystem;
@@ -44,7 +45,7 @@ public class RobotContainer {
   private final CommandXboxController scoringController = new CommandXboxController(1);
 
   // Subsystems
-  private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
+  private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstantsPracticeBot.createDrivetrain();
   // private final LimelightSubsystem limelightThree = new LimelightSubsystem(
   // new LimelightConfig("limelight-seven", Inches.of(10.5).in(Meters),
   // Inches.of(9.375).in(Meters),
@@ -91,18 +92,18 @@ public class RobotContainer {
         drivetrain
             .applyRequest(() -> drivetrain.driveRequest
                 .withVelocityX(-driverController.getLeftY()
-                    * TunerConstants.MaxSpeed) // Drive
+                    * TunerConstantsPracticeBot.MaxSpeed) // Drive
                 // forward
                 // with
                 // negative Y
                 // (forward)
                 .withVelocityY(-driverController.getLeftX()
-                    * TunerConstants.MaxSpeed) // Drive left
+                    * TunerConstantsPracticeBot.MaxSpeed) // Drive left
                                                // with
                                                // negative
                                                // X (left)
                 .withRotationalRate(-driverController.getRightX()
-                    * TunerConstants.MaxAngularRate) // Drive
+                    * TunerConstantsPracticeBot.MaxAngularRate) // Drive
                                                      // counterclockwise
             // with
             // negative X (left)
@@ -137,19 +138,19 @@ public class RobotContainer {
 
     driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
-            .withVelocityX(TunerConstants.MaxSpeed * 0.25)));
+            .withVelocityX(TunerConstantsPracticeBot.MaxSpeed * 0.25)));
     driverController.povDown().whileTrue(
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
-                .withVelocityX(TunerConstants.MaxSpeed * 0.25 * -1.0)));
+                .withVelocityX(TunerConstantsPracticeBot.MaxSpeed * 0.25 * -1.0)));
     driverController.povLeft().whileTrue(
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
-                .withVelocityY(TunerConstants.MaxSpeed * 0.25)));
+                .withVelocityY(TunerConstantsPracticeBot.MaxSpeed * 0.25)));
     driverController.povRight().whileTrue(
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
-                .withVelocityY(TunerConstants.MaxSpeed * 0.25 * -1.0)));
+                .withVelocityY(TunerConstantsPracticeBot.MaxSpeed * 0.25 * -1.0)));
 
     //////////////////////////////////////////////////////
     /// Scoring controls
