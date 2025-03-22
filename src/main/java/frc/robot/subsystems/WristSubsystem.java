@@ -43,7 +43,7 @@ public class WristSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         BaseStatusSignal.refreshAll(this.motorPosition);
-        System.out.println("Wrist Position " + motorPosition.getValueAsDouble());
+        //System.out.println("Wrist Position " + motorPosition.getValueAsDouble());
     }
 
     public Command restPositionCommand() {

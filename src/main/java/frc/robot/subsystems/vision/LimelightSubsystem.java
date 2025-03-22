@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class LimelightSubsystem extends SubsystemBase {
-  private final LimelightConfig limelightConfig;
-  private final String limelightName;
+  public final LimelightConfig limelightConfig;
+  public final String limelightName;
 
-  private RawFiducial[] fiducials;
-  private LimelightResults limelightResults;
+  public RawFiducial[] fiducials;
+  public LimelightResults limelightResults;
 
   private final int[] CORAL_TAGS_RED = {6, 7, 8, 9, 10, 11};
   private final int[] CORAL_TAGS_BLUE = {17, 18, 19, 20, 21, 22};
@@ -47,6 +47,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
     if (filterAprilTags) {
+      System.out.println("FILTERING CORAL TAGS");
       LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, getCoralTags(alliance));
     }
   }

@@ -71,7 +71,7 @@ public class AlignToReef extends Command {
       double rotationalRate = rotationalPidController.calculate(rotationalError, 0)
           * TunerConstantsPracticeBot.MaxAngularRate
           * 0.6;
-      final double velocityX = xPidController.calculate(distToRobot, Inches.of(12).in(Meters)) * -1.0
+      final double velocityX = xPidController.calculate(distToRobot, Inches.of(10).in(Meters)) * -1.0
           * TunerConstantsPracticeBot.MaxSpeed
           * 0.6;
       final double velocityY = yPidController.calculate(sideError, 0) * 1.0 *
@@ -110,3 +110,4 @@ public class AlignToReef extends Command {
     drivetrain.applyRequest(() -> idleRequest);
   }
 }
+

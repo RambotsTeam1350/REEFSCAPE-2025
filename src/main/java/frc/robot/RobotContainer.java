@@ -65,11 +65,6 @@ public class RobotContainer {
     new LimelightConfig("limelight-fifteen", frontRightLimelightPose),
     false);
   
-  // private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
-  // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
-  // Inches.of(8.25).in(Meters), 0, 0, 0));
-
-
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
@@ -138,6 +133,7 @@ public class RobotContainer {
 
     driverController.leftBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontRight));
     driverController.rightBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft));
+    
 
     driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest

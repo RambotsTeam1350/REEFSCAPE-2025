@@ -48,7 +48,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         BaseStatusSignal.refreshAll(this.motorPosition);
-        System.out.println("Shoulder Position: " + motorPosition.getValueAsDouble());  
+        //System.out.println("Shoulder Position: " + motorPosition.getValueAsDouble());  
     }
 
     public Command restPositionCommand() {
