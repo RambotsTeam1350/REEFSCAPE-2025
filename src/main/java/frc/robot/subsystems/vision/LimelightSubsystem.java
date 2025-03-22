@@ -11,6 +11,8 @@ import frc.robot.lib.LimelightConfig;
 import frc.robot.subsystems.vision.LimelightHelpers.LimelightResults;
 import frc.robot.subsystems.vision.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class LimelightSubsystem extends SubsystemBase {
   private final LimelightConfig limelightConfig;
@@ -19,7 +21,18 @@ public class LimelightSubsystem extends SubsystemBase {
   private RawFiducial[] fiducials;
   private LimelightResults limelightResults;
 
-  public LimelightSubsystem(LimelightConfig limelightConfig) {
+  private final int[] CORAL_TAGS_RED = {6, 7, 8, 9, 10, 11};
+  private final int[] CORAL_TAGS_BLUE = {17, 18, 19, 20, 21, 22};
+
+  public final int[] getCoralTags(Alliance alliance) {
+    if (alliance == Alliance.Red) {
+      return CORAL_TAGS_RED;
+    } else {
+      return CORAL_TAGS_BLUE;
+    }
+  }
+
+  public LimelightSubsystem(LimelightConfig limelightConfig, boolean filterAprilTags) {
     this.limelightConfig = limelightConfig;
     this.limelightName = this.limelightConfig.name();
 
@@ -31,7 +44,11 @@ public class LimelightSubsystem extends SubsystemBase {
         this.limelightConfig.roll(),
         this.limelightConfig.pitch(),
         this.limelightConfig.yaw());
-    // LimelightHelpers.SetFiducialIDFiltersOverride("", new int[] { 1, 4 });
+
+    Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+    if (filterAprilTags) {
+      LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, getCoralTags(alliance));
+    }
   }
 
   public static class NoSuchTargetException extends RuntimeException {
@@ -101,4 +118,9 @@ public class LimelightSubsystem extends SubsystemBase {
     }
     throw new NoSuchTargetException("No target with ID " + ids + "is in view!");
   }
+
+  public LimelightTarget_Fiducial getFiducial() {
+    return this.limelightResults.targets_Fiducials[0];
+  }
+
 }

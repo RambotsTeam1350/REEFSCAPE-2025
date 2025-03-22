@@ -58,14 +58,17 @@ public class RobotContainer {
       new Rotation3d(0, 0, 0));
 
   private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
-      new LimelightConfig("limelight-three", frontLeftLimelightPose));
+      new LimelightConfig("limelight-three", frontLeftLimelightPose),
+      false);
 
+  private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
+    new LimelightConfig("limelight-fifteen", frontRightLimelightPose),
+    false);
+  
   // private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
   // new LimelightConfig("limelight-fifteen", Inches.of(14.5).in(Meters), 0,
   // Inches.of(8.25).in(Meters), 0, 0, 0));
 
-  private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
-      new LimelightConfig("limelight-fifteen", frontRightLimelightPose));
 
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();

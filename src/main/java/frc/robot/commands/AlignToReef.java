@@ -44,9 +44,10 @@ public class AlignToReef extends Command {
 
   @Override
   public void execute() {
-    LimelightTarget_Fiducial fiducial;
+    LimelightTarget_Fiducial fiducial = null;
     try {
-      fiducial = limelight.getTargetFiducialWithId(1);
+      fiducial = limelight.getFiducial();
+      
       Pose3d targetPoseInRobotSpace = fiducial.getTargetPose_CameraSpace();
       double distToRobot = targetPoseInRobotSpace.getZ();
       double sideError = targetPoseInRobotSpace.getX();
