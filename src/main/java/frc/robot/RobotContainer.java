@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.commands.AlignToReef;
 import frc.robot.commands.FollowAprilTag;
 import frc.robot.constants.TunerConstants;
@@ -176,12 +175,12 @@ public class RobotContainer {
     drivetrain.registerTelemetry(drivetrain.logger::telemeterize);
   }
 
- /*  public Command getAutonomousCommand() {
-    return this.autoChooser.getSelected();
+   public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
     
-  }*/
+  }
   
-    public Command getAutonomousCommand() {
+    /*public Command getAutonomousCommand() {
       try{
           // Load the path you want to follow using its name in the GUI
           PathPlannerPath path = PathPlannerPath.fromPathFile("red middle");
@@ -193,7 +192,7 @@ public class RobotContainer {
           return Commands.none();
       }
     }
-  // ...
+  // ...*/
 
  /*  public Command getAutonomousCommand() {
     // This method loads the auto when it is called, however, it is recommended

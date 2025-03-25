@@ -215,6 +215,7 @@ public class CommandSwerveDrivetrainSubsystem extends TunerSwerveDrivetrain impl
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureAutoBuilder();
     }
 
     /**
