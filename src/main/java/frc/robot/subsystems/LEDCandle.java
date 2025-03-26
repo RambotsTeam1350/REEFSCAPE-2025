@@ -64,4 +64,69 @@ public Command LEDOff() {
     );
     }
 
+    public Command LEDBlue() {
+    return Commands.sequence(
+            Commands.runOnce(() -> this.CANdle.setLEDs(0, 0, 255))
+    );
+
+    }
+public Command LEDPurple() {
+    return Commands.sequence(
+        Commands.runOnce(() -> this.CANdle.setLEDs(136, 0, 212))
+    );
+
+}
+
+public Command LEDWhite() {
+    return Commands.sequence(
+        Commands.runOnce(() -> this.CANdle.setLEDs(255, 255, 255))
+    );
+}
+
+public Command LEDPink() {
+    return Commands.sequence(
+        Commands.runOnce(() -> this.CANdle.setLEDs(255, 125, 200))
+    );
+
+}
+
+public Command LEDOrange() {
+        return Commands.sequence(
+            Commands.runOnce(() -> this.CANdle.setLEDs(255, 153, 0))
+        );
+    }
+
+public Command LEDCyan() {
+
+    return Commands.sequence(
+        Commands.runOnce(() -> this.CANdle.setLEDs(0, 255, 255))
+    );
+}
+
+public Command LEDBrown() {
+    return Commands.sequence(
+        Commands.runOnce(() -> this.CANdle.setLEDs(137, 81, 41))
+    );
+}
+
+public Command LEDMaroon() {
+    return Commands.sequence(
+        Commands.runOnce(() -> this.CANdle.setLEDs(128, 0, 0))
+    );
+}
+
+public Command LEDRainbow() {
+    return Commands.sequence(
+        Commands.runOnce(() -> this.CANdle.setLEDs(0, 0, 0)),
+        Commands.runOnce(() -> this.CANdle.setLEDs(255, 0, 0)),
+        Commands.runOnce(() -> this.CANdle.setLEDs(255, 255, 0)),
+        Commands.runOnce(() -> this.CANdle.setLEDs(0, 255, 0)),
+        Commands.runOnce(() -> this.CANdle.setLEDs(0, 255, 255)),
+        Commands.runOnce(() -> this.CANdle.setLEDs(0, 0, 255)),
+        Commands.runOnce(() -> this.CANdle.setLEDs(255, 0, 255))
+    );
+
+
+}
+
 }
