@@ -45,7 +45,7 @@ public class FunnelSubsystem extends SubsystemBase {
 private double degreesToEncoderUnits(double degrees) {
     // Assuming 2048 units per revolution and a gear ratio of 9:1
     double unitsPerRevolution = 2048;
-    return (degrees / 360.0) * unitsPerRevolution * gearBoxRatio;
+    return (degrees / 360.0) * gearBoxRatio;
 }
 
 
@@ -57,8 +57,8 @@ public Command funnelCompress() {
             return Commands.sequence(
                
             // set target position to 100 rotations
-                Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(90)))),
-                Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(90))))
+                Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(30)))),
+                Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(-30))))
             );
         }
     
