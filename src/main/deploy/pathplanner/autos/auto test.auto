@@ -11,13 +11,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "red left 1"
+                  "pathName": "auto test 1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L3Elevator"
+                  "name": "l3Command"
                 }
               }
             ]
@@ -30,13 +30,51 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L3Coral"
+                  "name": "deAlgaefierUP"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "deliverCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCoralCommand"
                 }
               }
             ]
@@ -49,13 +87,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "red left 2"
+                  "pathName": "auto test 2"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "elevatorDown"
+                  "name": "restPositionCommand"
                 }
               }
             ]

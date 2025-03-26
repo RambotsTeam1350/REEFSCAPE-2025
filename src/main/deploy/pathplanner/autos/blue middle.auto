@@ -17,7 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L3Elevator"
+                  "name": "l3Command"
                 }
               }
             ]
@@ -30,13 +30,32 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L3Coral"
+                  "name": "deAlgaefierUP"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "deliverCoral"
                 }
               }
             ]
@@ -55,7 +74,89 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "elevatorDown"
+                  "name": "restPositionCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "deAlgaefierDown"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCoralCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "blue middle left pt 3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "l3Command"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "deAlgaefierUP"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "deliverCoral"
                 }
               }
             ]

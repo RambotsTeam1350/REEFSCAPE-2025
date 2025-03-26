@@ -12,8 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,7 +28,7 @@ import frc.robot.commands.FollowAprilTag;
 import frc.robot.constants.TunerConstants;
 import frc.robot.constants.TunerConstantsPracticeBot;
 import frc.robot.lib.LimelightConfig;
-import frc.robot.subsystems.ClimberSubsystem;
+//import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralModuleSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
@@ -64,7 +62,7 @@ public class RobotContainer {
     new LimelightConfig("limelight-fifteen", frontRightLimelightPose),
     false);
   
-  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  //private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem();
@@ -73,10 +71,11 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;   
 
   public RobotContainer() {
-    configureDrivetrainBindings();
+   
 
     autoChooser = AutoBuilder.buildAutoChooser("simple 3FT");
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    configureDrivetrainBindings();
   }
 
   private void configureDrivetrainBindings() {
@@ -157,9 +156,9 @@ public class RobotContainer {
     scoringController.leftBumper().onTrue(coralModuleSubsystem.IntakeCoralCommand());
     scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
 
-    scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
+   /*  scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
     scoringController.povUp().onTrue(climberSubsystem.descendCommand());
-
+*/
     scoringController.a().onTrue(elevatorSubsystem.l1Command().alongWith(shoulderSubsystem.level1Command()).alongWith(wristSubsystem.level1Command()));
     scoringController.x().onTrue(elevatorSubsystem.l2Command().alongWith(shoulderSubsystem.level2Command()).alongWith(wristSubsystem.level2Command()));
     scoringController.b().onTrue(elevatorSubsystem.l3Command().alongWith(shoulderSubsystem.level3Command()).alongWith(wristSubsystem.level3Command()));
@@ -179,25 +178,5 @@ public class RobotContainer {
     return autoChooser.getSelected();
     
   }
-  
-    /*public Command getAutonomousCommand() {
-      try{
-          // Load the path you want to follow using its name in the GUI
-          PathPlannerPath path = PathPlannerPath.fromPathFile("red middle");
-  
-          // Create a path following command using AutoBuilder. This will also trigger event markers.
-          return AutoBuilder.followPath(path);
-      } catch (Exception e) {
-          DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-          return Commands.none();
-      }
-    }
-  // ...*/
-
- /*  public Command getAutonomousCommand() {
-    // This method loads the auto when it is called, however, it is recommended
-    // to first load your paths/autos when code starts, then return the
-    // pre-loaded auto/path
-    return new PathPlannerAuto( "");
-  }*/
+ 
 }
