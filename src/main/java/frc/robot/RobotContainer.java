@@ -40,7 +40,7 @@ public class RobotContainer {
   private final CommandXboxController scoringController = new CommandXboxController(1);
 
   // Subsystems
-  private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstantsPracticeBot.createDrivetrain();
+  private final CommandSwerveDrivetrainSubsystem drivetrain = TunerConstants.createDrivetrain();
   // private final LimelightSubsystem limelightThree = new LimelightSubsystem(
   // new LimelightConfig("limelight-seven", Inches.of(10.5).in(Meters),
   // Inches.of(9.375).in(Meters),
@@ -85,18 +85,18 @@ public class RobotContainer {
         drivetrain
             .applyRequest(() -> drivetrain.driveRequest
                 .withVelocityX(-driverController.getLeftY()
-                    * TunerConstantsPracticeBot.MaxSpeed) // Drive
+                    * TunerConstants.MaxSpeed) // Drive
                 // forward
                 // with
                 // negative Y
                 // (forward)
                 .withVelocityY(-driverController.getLeftX()
-                    * TunerConstantsPracticeBot.MaxSpeed) // Drive left
+                    * TunerConstants.MaxSpeed) // Drive left
                                                // with
                                                // negative
                                                // X (left)
                 .withRotationalRate(-driverController.getRightX()
-                    * TunerConstantsPracticeBot.MaxAngularRate) // Drive
+                    * TunerConstants.MaxAngularRate) // Drive
                                                      // counterclockwise
             // with
             // negative X (left)
@@ -132,19 +132,19 @@ public class RobotContainer {
 
     driverController.povUp().whileTrue(
         drivetrain.applyRequest(() -> drivetrain.driveRequest
-            .withVelocityX(TunerConstantsPracticeBot.MaxSpeed * 0.25)));
+            .withVelocityX(TunerConstants.MaxSpeed * 0.25)));
     driverController.povDown().whileTrue(
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
-                .withVelocityX(TunerConstantsPracticeBot.MaxSpeed * 0.25 * -1.0)));
+                .withVelocityX(TunerConstants.MaxSpeed * 0.25 * -1.0)));
     driverController.povLeft().whileTrue(
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
-                .withVelocityY(TunerConstantsPracticeBot.MaxSpeed * 0.25)));
+                .withVelocityY(TunerConstants.MaxSpeed * 0.25)));
     driverController.povRight().whileTrue(
         drivetrain.applyRequest(
             () -> drivetrain.driveRequest
-                .withVelocityY(TunerConstantsPracticeBot.MaxSpeed * 0.25 * -1.0)));
+                .withVelocityY(TunerConstants.MaxSpeed * 0.25 * -1.0)));
 
     //////////////////////////////////////////////////////
     /// Scoring controls
