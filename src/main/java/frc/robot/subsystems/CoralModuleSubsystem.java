@@ -18,7 +18,9 @@ public class CoralModuleSubsystem extends SubsystemBase {
   
 
   private final CANrange CANrange;
-  private final TalonFX motor = new TalonFX(24);
+  private final TalonFX rightMotor = new TalonFX(18);
+  private final TalonFX leftMotor = new TalonFX(19);
+
   private StatusSignal<Voltage> motorSupplyVoltage;
   //private StatusSignal isDetected;
   private boolean hasCoral;

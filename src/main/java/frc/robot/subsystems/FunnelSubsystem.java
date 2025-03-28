@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FunnelSubsystem extends SubsystemBase {
 
-    private final TalonFX motor1 = new TalonFX(21);
-    private final TalonFX motor2 = new TalonFX(22);
+    private final TalonFX motor1 = new TalonFX(18);
+    private final TalonFX motor2 = new TalonFX(19);
     private final double gearBoxRatio = 9;
     private StatusSignal<Angle> motorPosition1 = motor1.getPosition();
     private StatusSignal<Angle> motorPosition2 = motor2.getPosition();

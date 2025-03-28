@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DeAlgaefierSubsystem extends SubsystemBase {
-    private final TalonFX motor = new TalonFX(25);
+    private final TalonFX motor = new TalonFX(22);
     private StatusSignal<Angle> motorPosition;
     private final double gearBoxRatio = 9;
 
