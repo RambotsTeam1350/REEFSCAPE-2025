@@ -28,9 +28,10 @@ import frc.robot.commands.FollowAprilTag;
 import frc.robot.constants.TunerConstants;
 import frc.robot.constants.TunerConstantsPracticeBot;
 import frc.robot.lib.LimelightConfig;
-//import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralModuleSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSubsystem;
 import frc.robot.subsystems.vision.LimelightSubsystem;
 
@@ -60,10 +61,10 @@ public class RobotContainer {
     new LimelightConfig("limelight-fifteen", frontRightLimelightPose),
     false);
   
-  //private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  
+  private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
 
   private final SendableChooser<Command> autoChooser;   
 
@@ -153,18 +154,20 @@ public class RobotContainer {
     scoringController.leftBumper().onTrue(coralModuleSubsystem.IntakeCoralCommand());
     scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
 
-   /*  scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
+    scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
     scoringController.povUp().onTrue(climberSubsystem.descendCommand());
-*/
-   /*  scoringController.a().onTrue(elevatorSubsystem.l1Command().alongWith(shoulderSubsystem.level1Command()).alongWith(wristSubsystem.level1Command()));
-    scoringController.x().onTrue(elevatorSubsystem.l2Command().alongWith(shoulderSubsystem.level2Command()).alongWith(wristSubsystem.level2Command()));
-    scoringController.b().onTrue(elevatorSubsystem.l3Command().alongWith(shoulderSubsystem.level3Command()).alongWith(wristSubsystem.level3Command()));
-    scoringController.y().onTrue(elevatorSubsystem.l4Command().alongWith(shoulderSubsystem.level4Command()).alongWith(wristSubsystem.level4Command()));
-    scoringController.leftTrigger().onTrue(elevatorSubsystem.lBargeCommand().alongWith(shoulderSubsystem.levelBargeCommand()).alongWith(wristSubsystem.levelBargeCommand()));
 
-    scoringController.back().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.restPositionCommand()).alongWith(wristSubsystem.restPositionCommand()));
-    scoringController.start().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.coralStationCommand()).alongWith(wristSubsystem.coralStationCommand()));
-*/
+    // scoringController.a().onTrue(elevatorSubsystem.l1Command().alongWith(shoulderSubsystem.level1Command()).alongWith(wristSubsystem.level1Command()));
+    // scoringController.x().onTrue(elevatorSubsystem.l2Command().alongWith(shoulderSubsystem.level2Command()).alongWith(wristSubsystem.level2Command()));
+    // scoringController.b().onTrue(elevatorSubsystem.l3Command().alongWith(shoulderSubsystem.level3Command()).alongWith(wristSubsystem.level3Command()));
+    // scoringController.y().onTrue(elevatorSubsystem.l4Command().alongWith(shoulderSubsystem.level4Command()).alongWith(wristSubsystem.level4Command()));
+    // scoringController.leftTrigger().onTrue(elevatorSubsystem.lBargeCommand().alongWith(shoulderSubsystem.levelBargeCommand()).alongWith(wristSubsystem.levelBargeCommand()));
+
+    // scoringController.back().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.restPositionCommand()).alongWith(wristSubsystem.restPositionCommand()));
+    // scoringController.start().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.coralStationCommand()).alongWith(wristSubsystem.coralStationCommand()));
+
+    // Open funnel to prepare to climb cage
+    scoringController.povLeft().onTrue(funnelSubsystem.funnelOpen());
 
     //////////////////////////////////////////////////////
 

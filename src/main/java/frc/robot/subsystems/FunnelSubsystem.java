@@ -48,33 +48,29 @@ private double degreesToEncoderUnits(double degrees) {
     return (degrees / 360.0) * gearBoxRatio;
 }
 
-
-public Command funnelCompress() {
-
-      // create a Motion Magic request, voltage output
-            final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-           //System.out.println();
-            return Commands.sequence(
-               
-            // set target position to 100 rotations
-                Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(30)))),
-                Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(-30))))
-            );
-        }
+public Command funnelClose() {
+    // create a Motion Magic request, voltage output
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    //System.out.println();
+    return Commands.sequence(
+        
+    // set target position to 100 rotations
+        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(30)))),
+        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(-30))))
+    );
+}
     
+public Command funnelOpen() {
 
-  public Command funnelExtend() {
-
-// create a Motion Magic request, voltage output
-final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-//System.out.println();
- return Commands.sequence(
-    
- // set target position to 100 rotations
-     Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(0)))),
-     Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(0))))
- );
+    // create a Motion Magic request, voltage output
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    //System.out.println();
+    return Commands.sequence(
+        
+    // set target position to 100 rotations
+        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(0)))),
+        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(0))))
+    );
 }
 
-
-  }
+}
