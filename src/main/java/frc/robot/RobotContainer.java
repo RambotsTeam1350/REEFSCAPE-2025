@@ -33,8 +33,7 @@ import frc.robot.lib.LimelightConfig;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralModuleSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ShoulderSubsystem;
-import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.FunnelSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSubsystem;
 import frc.robot.subsystems.vision.LimelightSubsystem;
 
@@ -67,8 +66,7 @@ public class RobotContainer {
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  private final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem();
-  private final WristSubsystem wristSubsystem = new WristSubsystem();
+  private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
 
   private final SendableChooser<Command> autoChooser;   
 
@@ -169,6 +167,7 @@ public class RobotContainer {
     scoringController.back().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.restPositionCommand()).alongWith(wristSubsystem.restPositionCommand()));
     scoringController.start().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.coralStationCommand()).alongWith(wristSubsystem.coralStationCommand()));
 
+//    scoringController.povLeft().onTrue(funnelSubsystem.funnelOpen());
 
     //////////////////////////////////////////////////////
 
