@@ -162,10 +162,6 @@ public class RobotContainer {
     scoringController.x().onTrue(elevatorSubsystem.l2Command());
     scoringController.b().onTrue(elevatorSubsystem.l3Command());
     scoringController.y().onTrue(elevatorSubsystem.l4Command());
-    scoringController.leftTrigger().onTrue(elevatorSubsystem.lBargeCommand().alongWith(shoulderSubsystem.levelBargeCommand()).alongWith(wristSubsystem.levelBargeCommand()));
-
-    scoringController.back().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.restPositionCommand()).alongWith(wristSubsystem.restPositionCommand()));
-    scoringController.start().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.coralStationCommand()).alongWith(wristSubsystem.coralStationCommand()));
 
 //    scoringController.povLeft().onTrue(funnelSubsystem.funnelOpen());
 
