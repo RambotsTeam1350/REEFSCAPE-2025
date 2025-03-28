@@ -90,4 +90,5 @@ public class ShoulderSubsystem extends SubsystemBase {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor.setControl(this.motorMotionMagicVoltage.withPosition(12))));
     }
+    
 }

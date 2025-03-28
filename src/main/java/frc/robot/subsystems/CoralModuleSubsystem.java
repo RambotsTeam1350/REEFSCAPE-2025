@@ -18,7 +18,8 @@ public class CoralModuleSubsystem extends SubsystemBase {
   
 
   private final CANrange CANrange;
-  private final TalonFX motor = new TalonFX(24);
+  private final TalonFX motor1 = new TalonFX(20);
+  private final TalonFX motor2 = new TalonFX(21);
   private StatusSignal<Voltage> motorSupplyVoltage;
   //private StatusSignal isDetected;
   private boolean hasCoral;
@@ -27,7 +28,8 @@ private final LEDCandle LEDCandle = new LEDCandle();
 
   public CoralModuleSubsystem() {
     this.CANrange = new CANrange(23);
-    this.motorSupplyVoltage = this.motor.getSupplyVoltage();
+    this.motorSupplyVoltage = this.motor1.getSupplyVoltage();
+    
   }
 
  
@@ -84,20 +86,25 @@ private final LEDCandle LEDCandle = new LEDCandle();
      public Command IntakeCoralCommand() {
     
     return Commands.sequence(
-        Commands.runOnce(() -> motor.set(0.5)).alongWith(LEDCandle.LEDYellow()),
+        Commands.runOnce(() -> motor1.set(0.5)).alongWith(LEDCandle.LEDYellow()),
+        Commands.runOnce(() -> motor2.set(0.5)),
         Commands.waitUntil(() -> CANrange.getIsDetected(true).getValue() == true),
-        Commands.runOnce(() -> motor.set(0.2)).alongWith(LEDCandle.LEDRed()),
+        Commands.runOnce(() -> motor1.set(0.2)).alongWith(LEDCandle.LEDRed()),
+        Commands.runOnce(() -> motor2.set(0.2)).alongWith(LEDCandle.LEDRed()),
         Commands.waitUntil(() -> CANrange.getIsDetected(true).getValue() == false),
-        Commands.runOnce(() -> motor.set(0)).alongWith(LEDCandle.LEDGreen())
+        Commands.runOnce(() -> motor1.set(0)).alongWith(LEDCandle.LEDGreen()),
+        Commands.runOnce(() -> motor1.set(0)).alongWith(LEDCandle.LEDGreen())
     );
     
     } 
     public Command deliverCoral() {
         
         return Commands.sequence(
-            Commands.runOnce(() -> motor.set(0.2)).alongWith(LEDCandle.LEDOff()),
+            Commands.runOnce(() -> motor1.set(0.2)).alongWith(LEDCandle.LEDOff()),
+            Commands.runOnce(() -> motor2.set(0.2)),
             Commands.waitSeconds(2),
-            Commands.runOnce(() -> motor.set(0))
+            Commands.runOnce(() -> motor1.set(0)),
+            Commands.runOnce(() -> motor2.set(0))
         );
     } 
 }

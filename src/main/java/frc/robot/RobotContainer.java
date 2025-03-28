@@ -56,7 +56,7 @@ public class RobotContainer {
       Inches.of(11.5).unaryMinus(),
       new Rotation3d(0, 0, 0));
 
-  private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
+  public final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
       new LimelightConfig("limelight-three", frontLeftLimelightPose),
       false);
 
@@ -160,10 +160,10 @@ public class RobotContainer {
     scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
     scoringController.povUp().onTrue(climberSubsystem.descendCommand());
 
-    scoringController.a().onTrue(elevatorSubsystem.l1Command().alongWith(shoulderSubsystem.level1Command()).alongWith(wristSubsystem.level1Command()));
-    scoringController.x().onTrue(elevatorSubsystem.l2Command().alongWith(shoulderSubsystem.level2Command()).alongWith(wristSubsystem.level2Command()));
-    scoringController.b().onTrue(elevatorSubsystem.l3Command().alongWith(shoulderSubsystem.level3Command()).alongWith(wristSubsystem.level3Command()));
-    scoringController.y().onTrue(elevatorSubsystem.l4Command().alongWith(shoulderSubsystem.level4Command()).alongWith(wristSubsystem.level4Command()));
+    scoringController.a().onTrue(elevatorSubsystem.l1Command());
+    scoringController.x().onTrue(elevatorSubsystem.l2Command());
+    scoringController.b().onTrue(elevatorSubsystem.l3Command());
+    scoringController.y().onTrue(elevatorSubsystem.l4Command());
     scoringController.leftTrigger().onTrue(elevatorSubsystem.lBargeCommand().alongWith(shoulderSubsystem.levelBargeCommand()).alongWith(wristSubsystem.levelBargeCommand()));
 
     scoringController.back().onTrue(elevatorSubsystem.restPositionCommand().alongWith(shoulderSubsystem.restPositionCommand()).alongWith(wristSubsystem.restPositionCommand()));

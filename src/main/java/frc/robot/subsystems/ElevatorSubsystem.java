@@ -53,8 +53,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         BaseStatusSignal.refreshAll(this.motor1Position, this.motor2Position);
-        //System.out.println(motor1Position.getValueAsDouble() + " elevator motor 1");
-        //System.out.println(motor2Position.getValueAsDouble() + " elevator motor 2");
+        System.out.println(motor1Position.getValueAsDouble() + " elevator motor 1");
+        System.out.println(motor2Position.getValueAsDouble() + " elevator motor 2");
     }
 
     private double degreesWithGearboxRatio(double degrees) {
@@ -74,36 +74,36 @@ public class ElevatorSubsystem extends SubsystemBase {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(7.7))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(0))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-7.8))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(0))));
     }
 
     public Command l2Command() {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(0))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(-17.5))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(0))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(17.79))));
     }
 
     public Command l3Command() {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(-21.6))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(-45.3))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(21.21))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(45.98))));
     }
 
     public Command l4Command() {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(-40.87))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(40.87))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(40.37))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(-40.37))));
     }
 
     public Command lBargeCommand() {
