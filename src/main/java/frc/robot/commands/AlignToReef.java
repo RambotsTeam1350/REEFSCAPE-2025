@@ -69,13 +69,13 @@ public class AlignToReef extends Command {
       double rotationalError = targetPoseInRobotSpace.getRotation().getY();
 
       double rotationalRate = rotationalPidController.calculate(rotationalError, 0)
-          * TunerConstantsPracticeBot.MaxAngularRate
+          * TunerConstants.MaxAngularRate
           * 0.6;
       final double velocityX = xPidController.calculate(distToRobot, Inches.of(10).in(Meters)) * -1.0
-          * TunerConstantsPracticeBot.MaxSpeed
+          * TunerConstants.MaxSpeed
           * 0.6;
       final double velocityY = yPidController.calculate(sideError, 0) * 1.0 *
-          TunerConstantsPracticeBot.MaxSpeed * 0.6;
+          TunerConstants.MaxSpeed * 0.6;
 
       // if (!xPidController.atSetpoint() || !yPidController.atSetpoint()) {
       //   rotationalRate /= 5;

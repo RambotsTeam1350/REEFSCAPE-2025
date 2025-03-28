@@ -30,8 +30,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Telemetry;
 import frc.robot.constants.TunerConstants;
 import frc.robot.constants.TunerConstantsPracticeBot;
-import frc.robot.constants.TunerConstantsPracticeBot.TunerSwerveDrivetrain;
-//import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
+//import frc.robot.constants.TunerConstantsPracticeBot.TunerSwerveDrivetrain;
+import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -57,14 +57,14 @@ public class CommandSwerveDrivetrainSubsystem extends TunerSwerveDrivetrain impl
 
     /* Swerve requests for driving */
     public final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-            .withDeadband(TunerConstantsPracticeBot.MaxSpeed * 0.1).withRotationalDeadband(TunerConstantsPracticeBot.MaxAngularRate * 0.1) // Add
+            .withDeadband(TunerConstants.MaxSpeed * 0.1).withRotationalDeadband(TunerConstants.MaxAngularRate * 0.1) // Add
                                                                                                                      // a
                                                                                                                      // 10%
                                                                                                                      // deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     public final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
     public final SwerveRequest.PointWheelsAt pointRequest = new SwerveRequest.PointWheelsAt();
-    public final Telemetry logger = new Telemetry(TunerConstantsPracticeBot.MaxSpeed * 0.75);
+    public final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed * 0.75);
 
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
