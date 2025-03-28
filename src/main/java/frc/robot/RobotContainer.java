@@ -55,11 +55,11 @@ public class RobotContainer {
 
   private final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
       new LimelightConfig("limelight-three", frontLeftLimelightPose),
-      false);
+      true);
 
   private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
     new LimelightConfig("limelight-fifteen", frontRightLimelightPose),
-    false);
+    true);
   
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
