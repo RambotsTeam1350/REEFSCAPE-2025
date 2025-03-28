@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -28,11 +30,29 @@ public class CoralModuleSubsystem extends SubsystemBase {
 private final LEDCandle LEDCandle = new LEDCandle(); 
 
   public CoralModuleSubsystem() {
+
+    TalonFXConfiguration cfg = new TalonFXConfiguration();
+    cfg.Slot0.kP = 4.8; // P value: Position
+    cfg.Slot0.kI = 0; // I value: Integral
+    cfg.Slot0.kD = 0.1; // D value: Derivative
+    cfg.Slot0.kV = 0.12; // V value: Velocity
+    //cfg.Slot0.kG = 0.1; // G value: Feedforward
+    cfg.Slot0.kA = 0.01; // A value: Acceleration
+    cfg.Slot0.kS = 0.25; // S value: Soft Limit
+
+    MotionMagicConfigs mm = cfg.MotionMagic;
+    mm.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps NOTE THIS IS THE SPEED IT WILL GO, WANT SLOWER, MAKE THIS SLOWER
+    mm.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    mm.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    leftMotor.getConfigurator().apply(cfg);
+    rightMotor.getConfigurator().apply(cfg);
+
+
     this.CANrange = new CANrange(23);
-    this.motorSupplyVoltage = this.motor.getSupplyVoltage();
+    this.motorSupplyVoltage = leftMotor.getSupplyVoltage();
   }
 
- 
 
 
   @Override
@@ -86,20 +106,20 @@ private final LEDCandle LEDCandle = new LEDCandle();
      public Command IntakeCoralCommand() {
     
     return Commands.sequence(
-        Commands.runOnce(() -> motor.set(0.5)).alongWith(LEDCandle.LEDYellow()),
+        Commands.runOnce(() -> leftMotor.set(0.5)).alongWith(LEDCandle.LEDYellow()),
         Commands.waitUntil(() -> CANrange.getIsDetected(true).getValue() == true),
-        Commands.runOnce(() -> motor.set(0.2)).alongWith(LEDCandle.LEDRed()),
+        Commands.runOnce(() -> leftMotor.set(0.2)).alongWith(LEDCandle.LEDRed()),
         Commands.waitUntil(() -> CANrange.getIsDetected(true).getValue() == false),
-        Commands.runOnce(() -> motor.set(0)).alongWith(LEDCandle.LEDGreen())
+        Commands.runOnce(() -> leftMotor.set(0)).alongWith(LEDCandle.LEDGreen())
     );
     
     } 
-    public Command deliverCoral() {
-        
+
+    public Command deliverCoral() {        
         return Commands.sequence(
-            Commands.runOnce(() -> motor.set(0.2)).alongWith(LEDCandle.LEDOff()),
+            Commands.runOnce(() -> leftMotor.set(0.2)).alongWith(LEDCandle.LEDOff()),
             Commands.waitSeconds(2),
-            Commands.runOnce(() -> motor.set(0))
+            Commands.runOnce(() -> leftMotor.set(0))
         );
     } 
 }
