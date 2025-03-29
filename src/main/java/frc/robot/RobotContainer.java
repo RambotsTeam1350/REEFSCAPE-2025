@@ -75,8 +75,13 @@ public class RobotContainer {
   public RobotContainer() {
     configureDrivetrainBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser("simple 3FT");
+    autoChooser = AutoBuilder.buildAutoChooser("blue middle");
     SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
+
+  public void periodic() {
+
+    System.out.println(autoChooser.getSelected());
   }
 
   private void configureDrivetrainBindings() {
@@ -177,7 +182,7 @@ public class RobotContainer {
   }
 
    public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return this.autoChooser.getSelected();
     
   }
   
