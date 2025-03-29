@@ -53,8 +53,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         BaseStatusSignal.refreshAll(this.motor1Position, this.motor2Position);
-        System.out.println(motor1Position.getValueAsDouble() + " elevator motor 1");
-        System.out.println(motor2Position.getValueAsDouble() + " elevator motor 2");
+        //System.out.println(motor1Position.getValueAsDouble() + " elevator motor 1");
+        //System.out.println(motor2Position.getValueAsDouble() + " elevator motor 2");
     }
 
     private double degreesWithGearboxRatio(double degrees) {

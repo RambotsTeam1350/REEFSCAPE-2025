@@ -34,6 +34,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralModuleSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FunnelSubsystem;
+import frc.robot.subsystems.DeAlgaefierSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSubsystem;
 import frc.robot.subsystems.vision.LimelightSubsystem;
 
@@ -67,6 +68,7 @@ public class RobotContainer {
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final FunnelSubsystem funnelSubsystem = new FunnelSubsystem();
+  private final DeAlgaefierSubsystem algaeSubsystem = new DeAlgaefierSubsystem();
 
   private final SendableChooser<Command> autoChooser;   
 
@@ -153,17 +155,21 @@ public class RobotContainer {
     //////////////////////////////////////////////////////
 
     scoringController.leftBumper().onTrue(coralModuleSubsystem.IntakeCoralCommand());
-    scoringController.povRight().onTrue(coralModuleSubsystem.deliverCoral());
+    scoringController.rightBumper().onTrue(coralModuleSubsystem.deliverCoral());
+    scoringController.leftTrigger().onTrue(algaeSubsystem.deAlgaefierDown());
+    scoringController.rightTrigger().onTrue(algaeSubsystem.deAlgaefierUp());
 
     scoringController.povDown().onTrue(climberSubsystem.ascendCommand());
     scoringController.povUp().onTrue(climberSubsystem.descendCommand());
+    scoringController.povLeft().onTrue(funnelSubsystem.funnelOpen());
+    scoringController.povRight().onTrue(funnelSubsystem.funnelClose());
 
     scoringController.a().onTrue(elevatorSubsystem.l1Command());
     scoringController.x().onTrue(elevatorSubsystem.l2Command());
     scoringController.b().onTrue(elevatorSubsystem.l3Command());
     scoringController.y().onTrue(elevatorSubsystem.l4Command());
 
-//    scoringController.povLeft().onTrue(funnelSubsystem.funnelOpen());
+    
 
     //////////////////////////////////////////////////////
 

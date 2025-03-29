@@ -21,7 +21,7 @@ public class DeAlgaefierSubsystem extends SubsystemBase {
     private final double gearBoxRatio = 9;
 
     public DeAlgaefierSubsystem() {
-       
+    
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         cfg.Slot0.kP = 4.8; // P value: Position
         cfg.Slot0.kI = 0; // I value: Integral
@@ -33,7 +33,7 @@ public class DeAlgaefierSubsystem extends SubsystemBase {
 
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = 20; // Target cruise velocity of 80 rps NOTE: this speed is defaulty 80, its 20 to try and run slower
-        mm.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+        mm.MotionMagicAcceleration = 80; // Target acceleration of 160 rps/s (0.5 seconds)
         mm.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         motor.getConfigurator().apply(cfg);
@@ -49,7 +49,7 @@ public class DeAlgaefierSubsystem extends SubsystemBase {
         final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
         return Commands.sequence(
 
-            Commands.runOnce(() -> motor.setControl(new MotionMagicVoltage(degreesToEncoderUnits(180))))
+            Commands.runOnce(() -> motor.setControl(new MotionMagicVoltage(-4)))
         );
     }
 
@@ -61,6 +61,4 @@ public class DeAlgaefierSubsystem extends SubsystemBase {
         );
     }
 
-
     }
-
