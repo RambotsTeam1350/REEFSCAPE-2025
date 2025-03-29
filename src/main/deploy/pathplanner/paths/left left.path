@@ -33,20 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "deAlgaefierUP",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "deAlgaefierDown",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "l3Command",
-      "waypointRelativePos": 1.0,
+      "name": "l2Command",
+      "waypointRelativePos": 0.5474833808167111,
       "endWaypointRelativePos": null,
       "command": null
     },

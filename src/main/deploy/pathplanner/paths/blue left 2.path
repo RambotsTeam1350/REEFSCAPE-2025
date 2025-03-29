@@ -34,13 +34,13 @@
   "eventMarkers": [
     {
       "name": "restPositionCommand",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.3670465337131972,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "IntakeCoralCommand",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }

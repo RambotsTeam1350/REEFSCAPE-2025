@@ -34,7 +34,13 @@
   "eventMarkers": [
     {
       "name": "l2Command",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.4715099715099696,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "deliverCoral",
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }
