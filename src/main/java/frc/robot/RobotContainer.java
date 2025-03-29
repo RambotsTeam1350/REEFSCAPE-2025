@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -77,8 +78,15 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser("blue middle");
     SmartDashboard.putData("Auto Chooser", autoChooser);
-  }
+  
 
+  NamedCommands.registerCommand("l2Command", elevatorSubsystem.l2Command());
+  NamedCommands.registerCommand("l3Command", elevatorSubsystem.l3Command());
+  NamedCommands.registerCommand("deliverCoral", coralModuleSubsystem.deliverCoral());
+  NamedCommands.registerCommand("restPositionCommand", elevatorSubsystem.restPositionCommand());
+  NamedCommands.registerCommand("IntakeCoralCommand", coralModuleSubsystem.IntakeCoralCommand());
+
+}
   public void periodic() {
 
     System.out.println(autoChooser.getSelected());
