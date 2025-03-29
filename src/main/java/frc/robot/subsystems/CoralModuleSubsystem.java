@@ -76,7 +76,7 @@ public class CoralModuleSubsystem extends SubsystemBase {
         return Commands.sequence(
             Commands.runOnce(() -> motor1.set(-0.15)).alongWith(LEDCandle.LEDOff()),
             Commands.runOnce(() -> motor2.set(0.15)),
-            Commands.waitSeconds(2),
+            Commands.waitSeconds(1),
             Commands.runOnce(() -> motor1.set(0)),
             Commands.runOnce(() -> motor2.set(0))
         );
