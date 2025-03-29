@@ -59,11 +59,11 @@ public class RobotContainer {
 
   public final LimelightSubsystem limelightFrontLeft = new LimelightSubsystem(
       new LimelightConfig("limelight-three", frontLeftLimelightPose),
-      true);
+      false);
 
   private final LimelightSubsystem limelightFrontRight = new LimelightSubsystem(
     new LimelightConfig("limelight-fifteen", frontRightLimelightPose),
-    true);
+    false);
   
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final CoralModuleSubsystem coralModuleSubsystem = new CoralModuleSubsystem();
@@ -143,8 +143,8 @@ public class RobotContainer {
     driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
    // driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    driverController.leftBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontRight));
-    driverController.rightBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft));
+    driverController.leftBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontRight, -2));
+    driverController.rightBumper().whileTrue(new AlignToReef(drivetrain, limelightFrontLeft, 2));
     
 
     driverController.povUp().whileTrue(

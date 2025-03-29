@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class LEDCandle {
-    private final CANdle CANdle = new CANdle(24, "rio");
+    private final CANdle CANdle = new CANdle(35, "rio");
     private final CANdleConfiguration CANdleConfiguration;
    // private CurrentState currentState = CurrentState.OFF;
 
