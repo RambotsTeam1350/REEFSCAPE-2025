@@ -50,8 +50,8 @@ private double degreesToEncoderUnits(double degrees) {
 
 public void periodic() {
     BaseStatusSignal.refreshAll(this.motorPosition1, this.motorPosition2);
-    System.out.println(motorPosition1.getValueAsDouble() + " Funnel motor 1");
-    System.out.println(motorPosition2.getValueAsDouble() + " Funnel motor 2");
+    //System.out.println(motorPosition1.getValueAsDouble() + " Funnel motor 1");
+    //System.out.println(motorPosition2.getValueAsDouble() + " Funnel motor 2");
 }
 public Command funnelClose() {
     // create a Motion Magic request, voltage output
