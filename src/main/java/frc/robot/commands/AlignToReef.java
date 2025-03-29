@@ -25,29 +25,31 @@ public class AlignToReef extends Command {
       .withInputFilter(3)
       .withOutputFilter(2)
       .withDeadband(0.05)
-      .withOutputRateLimit(0.1);
+      .withOutputRateLimit(0.3);
   private static final PIDControllerConfigurable xPidController = new PIDControllerConfigurable(
       0.55, 0, 0.05, 0.06)
       .withInputFilter(3)
       .withOutputFilter(2)
       .withDeadband(0.01)
-      .withOutputRateLimit(0.1);
+      .withOutputRateLimit(0.3);
   private static final PIDControllerConfigurable yPidController = new PIDControllerConfigurable(
       0.55, 0, 0.05, 0.06)
       .withInputFilter(3)
       .withOutputFilter(2)
       .withDeadband(0.01)
-      .withOutputRateLimit(0.1);
+      .withOutputRateLimit(0.3);
   private static final SwerveRequest.RobotCentric alignRequest = new SwerveRequest.RobotCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
+  private static int offsetInches;
 
   // private static final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
 
-  public AlignToReef(CommandSwerveDrivetrainSubsystem drivetrain, LimelightSubsystem limelight) {
+  public AlignToReef(CommandSwerveDrivetrainSubsystem drivetrain, LimelightSubsystem limelight, int offsetInches) {
     this.drivetrain = drivetrain;
     this.limelight = limelight;
+    this.offsetInches = offsetInches;
     // addRequirements(this.drivetrain, this.limelight);
   }
 
@@ -73,9 +75,9 @@ public class AlignToReef extends Command {
           * 0.6;
       final double velocityX = xPidController.calculate(distToRobot, Inches.of(10).in(Meters)) * -1.0
           * TunerConstants.MaxSpeed
-          * 0.6;
-      final double velocityY = yPidController.calculate(sideError, 0) * 1.0 *
-          TunerConstants.MaxSpeed * 0.6;
+          * 0.7;
+      final double velocityY = yPidController.calculate(sideError, Inches.of(offsetInches).in(Meters)) * 1.0 *
+          TunerConstants.MaxSpeed * 0.7;
 
       // if (!xPidController.atSetpoint() || !yPidController.atSetpoint()) {
       //   rotationalRate /= 5;

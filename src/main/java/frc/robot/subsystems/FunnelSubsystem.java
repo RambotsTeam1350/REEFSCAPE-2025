@@ -28,9 +28,9 @@ public class FunnelSubsystem extends SubsystemBase {
         cfg.Slot0.kP = 4.8; // P value: Position
         cfg.Slot0.kI = 0.2; // I value: Integral
         cfg.Slot0.kD = 0.1; // D value: Derivative
-        cfg.Slot0.kV = 0.09; // V value: Velocity
+        cfg.Slot0.kV = 0.05; // V value: Velocity
         //cfg.Slot0.kG = 0.1; // G value: Feedforward
-        cfg.Slot0.kA = 0.15; // A value: Acceleration
+        cfg.Slot0.kA = 0.05; // A value: Acceleration
         cfg.Slot0.kS = 0.25; // S value: Soft Limit
 
         MotionMagicConfigs mm = cfg.MotionMagic;
@@ -50,8 +50,8 @@ private double degreesToEncoderUnits(double degrees) {
 
 public void periodic() {
     BaseStatusSignal.refreshAll(this.motorPosition1, this.motorPosition2);
-    //System.out.println(motorPosition1.getValueAsDouble() + " Funnel motor 1");
-    //System.out.println(motorPosition2.getValueAsDouble() + " Funnel motor 2");
+    System.out.println(motorPosition1.getValueAsDouble() + " Funnel motor 1");
+    System.out.println(motorPosition2.getValueAsDouble() + " Funnel motor 2");
 }
 public Command funnelClose() {
     // create a Motion Magic request, voltage output
@@ -60,8 +60,8 @@ public Command funnelClose() {
     return Commands.sequence(
         
     // set target position to 100 rotations
-        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(-0.32))),
-        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(0.34)))
+        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(-0.18))),
+        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(0.09)))
     );
 }
     
@@ -73,8 +73,8 @@ public Command funnelOpen() {
     return Commands.sequence(
         
     // set target position to 100 rotations
-        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(-0.8))),
-        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(1.06)))
+        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(1.46))),
+        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(-2.4)))
     );
 }
 
