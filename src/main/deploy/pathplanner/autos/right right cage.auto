@@ -11,32 +11,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "blue right 1"
+                  "pathName": "right right"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "l3Command"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "deAlgaefierUP"
+                  "name": "l2Command"
                 }
               }
             ]
@@ -76,12 +57,6 @@
                 "data": {
                   "name": "restPositionCommand"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "deAlgaefierDown"
-                }
               }
             ]
           }
@@ -119,25 +94,6 @@
                 "type": "named",
                 "data": {
                   "name": "l3Command"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "deAlgaefierUP"
                 }
               }
             ]
