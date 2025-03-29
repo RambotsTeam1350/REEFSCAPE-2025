@@ -68,8 +68,8 @@ public Command funnelOpen() {
     return Commands.sequence(
         
     // set target position to 100 rotations
-        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(0)))),
-        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(0))))
+        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(degreesToEncoderUnits(5)))),
+        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(degreesToEncoderUnits(-5))))
     );
 }
 

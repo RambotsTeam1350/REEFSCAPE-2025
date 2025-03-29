@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -15,96 +15,70 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.LEDCandle;
 
 public class CoralModuleSubsystem extends SubsystemBase {
-  
+    private final CANrange canRange;
+    private final TalonFX motor1 = new TalonFX(20);
+    private final TalonFX motor2 = new TalonFX(21);
+    private final StatusSignal<Boolean> detectionSignal;
+    private final LEDCandle LEDCandle = new LEDCandle();
 
-  private final CANrange CANrange;
-  private final TalonFX motor1 = new TalonFX(20);
-  private final TalonFX motor2 = new TalonFX(21);
-  private StatusSignal<Voltage> motorSupplyVoltage;
-  //private StatusSignal isDetected;
-  private boolean hasCoral;
+    public CoralModuleSubsystem() {
+        canRange = new CANrange(23); // Adjust ID as needed
+        
+      
+        CANrangeConfiguration config = new CANrangeConfiguration();
+        config.ProximityParams.ProximityThreshold = 0.15;
+        // config.ProximityParams.ProximityHysteresis = 0.04;
 
-private final LEDCandle LEDCandle = new LEDCandle(); 
+        // Apply configuration
+      canRange.getConfigurator().apply(config);
 
-  public CoralModuleSubsystem() {
-    this.CANrange = new CANrange(23);
-    this.motorSupplyVoltage = this.motor1.getSupplyVoltage();
-    
-  }
-
- 
-
-
-  @Override
-  public void periodic() {
-    Voltage lastMotorSupplyVoltage = this.motorSupplyVoltage.getValue();
-    this.motorSupplyVoltage.refresh();
-    Voltage newMotorSupplyVoltage = this.motorSupplyVoltage.getValue();
-
-    if (lastMotorSupplyVoltage.in(Volts) - newMotorSupplyVoltage.in(Volts) > 2) { // rnadom number here for now
-      this.hasCoral = true;
+        detectionSignal = canRange.getIsDetected();
     }
-  }
 
+    @Override
+    public void periodic() {
+        detectionSignal.refresh();
+    }
 
- /*
-  public boolean hasCoral() {
-  [CANrange variable].[sensor?] 
-  }
+    public boolean isObjectDetected() {
+        return detectionSignal.getValue();
+    }
 
-  */
-
-  public boolean hasCoral() {
-    return this.hasCoral;
-  }
-
-  public void resetCoralState() {
-    this.hasCoral = false;
-  }
-
-   /* public Command IntakeCoralCommand() {
-        final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    public Command IntakeCoralCommand() {
         return Commands.sequence(
-            Commands.runOnce (() -> this.resetCoralState()),
-            Commands.runOnce (() -> this.motor.set(0.5)),
-            Commands.waitUntil(this::hasCoral),
-            Commands.runOnce (() -> this.motor.set(0.2)),
-            Commands.waitSeconds(2)
+            // Start motors
+            Commands.runOnce(() -> {
+                motor1.set(-0.4);
+                motor2.set(0.4);
+            }).alongWith(LEDCandle.LEDYellow()),
+            
+            // Wait for object detection
+            Commands.waitUntil(this::isObjectDetected),
+            
+            // Slow motors when detected
+            Commands.runOnce(() -> {
+                motor1.set(-0.15);
+                motor2.set(0.15);
+            }).alongWith(LEDCandle.LEDRed()),
+            
+            // Wait until object passes
+            Commands.waitUntil(() -> !isObjectDetected()),
+            
+            // Stop motors
+            Commands.runOnce(() -> {
+                motor1.set(0);
+                motor2.set(0);
+            }).alongWith(LEDCandle.LEDGreen())
         );
     }
 
-   */ 
-
- public StatusSignal getIsDetected(boolean refresh) {
-
-   return CANrange.getIsDetected(refresh);
-   //
-  }
-
-
-  
-     public Command IntakeCoralCommand() {
-    
-    return Commands.sequence(
-        Commands.runOnce(() -> motor1.set(0.5)).alongWith(LEDCandle.LEDYellow()),
-        Commands.runOnce(() -> motor2.set(0.5)),
-        Commands.waitUntil(() -> CANrange.getIsDetected(true).getValue() == true),
-        Commands.runOnce(() -> motor1.set(0.2)).alongWith(LEDCandle.LEDRed()),
-        Commands.runOnce(() -> motor2.set(0.2)).alongWith(LEDCandle.LEDRed()),
-        Commands.waitUntil(() -> CANrange.getIsDetected(true).getValue() == false),
-        Commands.runOnce(() -> motor1.set(0)).alongWith(LEDCandle.LEDGreen()),
-        Commands.runOnce(() -> motor1.set(0)).alongWith(LEDCandle.LEDGreen())
-    );
-    
-    } 
     public Command deliverCoral() {
-        
         return Commands.sequence(
-            Commands.runOnce(() -> motor1.set(0.2)).alongWith(LEDCandle.LEDOff()),
-            Commands.runOnce(() -> motor2.set(0.2)),
+            Commands.runOnce(() -> motor1.set(-0.15)).alongWith(LEDCandle.LEDOff()),
+            Commands.runOnce(() -> motor2.set(0.15)),
             Commands.waitSeconds(2),
             Commands.runOnce(() -> motor1.set(0)),
             Commands.runOnce(() -> motor2.set(0))
         );
-    } 
+    }
 }

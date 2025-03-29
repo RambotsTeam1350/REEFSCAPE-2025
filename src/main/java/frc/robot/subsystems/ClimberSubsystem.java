@@ -15,13 +15,13 @@ public class ClimberSubsystem extends SubsystemBase {
         public static final int MOTOR_1_ID = 15;
         public static final int MOTOR_2_ID = 14;
 
-        public static final double GEARBOX_RATIO = 60;
+        public static final double GEARBOX_RATIO = 45;
         public static final double ROTATION_AMOUNT = 0.375;
 
         public static final Slot0Configs SLOT0_CONFIGS = new Slot0Configs().withKP(4.8).withKI(0).withKD(0.1)
                 .withKV(0.12).withKA(0.01).withKS(0.25);
         public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(80).withMotionMagicAcceleration(160).withMotionMagicJerk(1600);
+                .withMotionMagicCruiseVelocity(40).withMotionMagicAcceleration(160).withMotionMagicJerk(1600);
         public static final TalonFXConfiguration TALON_FX_CONFIGURATION = new TalonFXConfiguration()
                 .withSlot0(SLOT0_CONFIGS).withMotionMagic(MOTION_MAGIC_CONFIGS);
     }
@@ -77,9 +77,9 @@ public class ClimberSubsystem extends SubsystemBase {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(this.degreesWithGearboxRatio(135)))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(this.degreesWithGearboxRatio(130)))),
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(degreesWithGearboxRatio(-135)))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(degreesWithGearboxRatio(-130)))));
     }
     
     public Command descendCommand() {
