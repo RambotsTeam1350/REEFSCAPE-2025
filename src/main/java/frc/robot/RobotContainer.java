@@ -80,11 +80,11 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
   
 
-  NamedCommands.registerCommand("l2Command", Commands.runOnce(()-> elevatorSubsystem.l2Command()));
-  NamedCommands.registerCommand("l3Command", Commands.runOnce(()-> elevatorSubsystem.l3Command()));
-  NamedCommands.registerCommand("deliverCoral", Commands.runOnce(()-> coralModuleSubsystem.deliverCoral()));
-  NamedCommands.registerCommand("restPositionCommand", Commands.runOnce(()-> elevatorSubsystem.restPositionCommand()));
-  NamedCommands.registerCommand("IntakeCoralCommand", Commands.runOnce(()-> coralModuleSubsystem.IntakeCoralCommand()));
+  NamedCommands.registerCommand("l2Command", elevatorSubsystem.l2Command());
+  NamedCommands.registerCommand("l3Command", elevatorSubsystem.l3Command());
+  NamedCommands.registerCommand("deliverCoral", coralModuleSubsystem.deliverCoral());
+  NamedCommands.registerCommand("restPositionCommand", elevatorSubsystem.restPositionCommand());
+  NamedCommands.registerCommand("IntakeCoralCommand", coralModuleSubsystem.IntakeCoralCommand());
 
 }
   public void periodic() {
