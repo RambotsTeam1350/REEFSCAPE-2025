@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "right middle"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "l2Command"
-                }
               }
             ]
           }
@@ -31,12 +25,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "deliverCoral"
                 }
               }
             ]
@@ -51,12 +39,6 @@
                 "data": {
                   "pathName": "blue right 2"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "restPositionCommand"
-                }
               }
             ]
           }
@@ -69,12 +51,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCoralCommand"
                 }
               }
             ]
@@ -88,31 +64,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "blue right 3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "l3Command"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "deliverCoral"
                 }
               }
             ]
