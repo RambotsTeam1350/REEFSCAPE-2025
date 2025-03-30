@@ -7,6 +7,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,8 +62,10 @@ public Command funnelClose() {
     return Commands.sequence(
         
     // set target position to 100 rotations
-        Commands.runOnce (() -> motor1.setControl(m_request.withPosition(-0.18))),
-        Commands.runOnce (() -> motor2.setControl(m_request.withPosition(0.09)))
+        Commands.runOnce(() -> motor1.setControl(m_request.withPosition(-0.18))),
+        Commands.runOnce(() -> motor2.setControl(m_request.withPosition(0.09))),
+        Commands.runOnce(() -> motor1.setNeutralMode(NeutralModeValue.Brake)),
+        Commands.runOnce(() -> motor2.setNeutralMode(NeutralModeValue.Brake))
     );
 }
     
