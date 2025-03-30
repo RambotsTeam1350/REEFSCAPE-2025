@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "l2Command",
-      "waypointRelativePos": 0.4772079772079748,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
