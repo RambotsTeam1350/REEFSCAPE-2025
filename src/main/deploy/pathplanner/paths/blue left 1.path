@@ -36,13 +36,23 @@
       "name": "l2Command",
       "waypointRelativePos": 0.45821462488129283,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "l2Command"
+        }
+      }
     },
     {
       "name": "deliverCoral",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deliverCoral"
+        }
+      }
     }
   ],
   "globalConstraints": {

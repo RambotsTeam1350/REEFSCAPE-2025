@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 2.715
+        "x": 3.9199795081967217,
+        "y": 2.724334016393442
       },
       "prevControl": {
-        "x": 3.136885245901639,
-        "y": 2.1635655737704913
+        "x": 3.0568647540983607,
+        "y": 2.1728995901639334
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,13 +36,23 @@
       "name": "l3Command",
       "waypointRelativePos": 0.42782526115858766,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "l3Command"
+        }
+      }
     },
     {
       "name": "deliverCoral",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deliverCoral"
+        }
+      }
     }
   ],
   "globalConstraints": {
