@@ -83,18 +83,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(-17.5))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(-17.06))), // New values as of 10/9/25
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(17.79))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(18.14)))); // New values as of 10/9/25
     }
 
     public Command l3Command() {
         return Commands.sequence(
                 Commands.runOnce(() -> this.motor1
                         .setControl(
-                                this.motor1MotionMagicVoltageRequest.withPosition(-45.3))),
+                                this.motor1MotionMagicVoltageRequest.withPosition(-56.92))), // New values as of 10/9/25
                 Commands.runOnce(() -> this.motor2
-                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(45.98))));
+                        .setControl(this.motor2MotionMagicVoltageRequest.withPosition(59.07)))); // New values as of 10/9/25
     }
 
     public Command l4Command() {
